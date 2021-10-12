@@ -4,72 +4,71 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_background"
-    tools:context=".MainActivity">
+    android:background="@color/gray_background">
 
     <ImageView
         android:id="@+id/poster_1"
-        android:layout_width="180dp"
-        android:layout_height="270dp"
-        android:layout_marginTop="22dp"
-        android:scaleType="fitXY"
-        app:layout_constraintEnd_toStartOf="@+id/poster_2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription"
-        tools:srcCompat="@tools:sample/avatars" />
-
-    <ImageView
-        android:id="@+id/poster_3"
-        android:layout_width="180dp"
-        android:layout_height="270dp"
+        android:layout_width="78dp"
+        android:layout_height="120dp"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/poster_4"
+        app:layout_constraintEnd_toStartOf="@+id/poster_2"
         app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/poster_1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.32999998"
         tools:ignore="ContentDescription"
         tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
         android:id="@+id/poster_2"
-        android:layout_width="189dp"
-        android:layout_height="271dp"
+        android:layout_width="78dp"
+        android:layout_height="120dp"
         android:scaleType="fitXY"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintEnd_toStartOf="@+id/poster_3"
         app:layout_constraintStart_toEndOf="@+id/poster_1"
         app:layout_constraintTop_toTopOf="@+id/poster_1"
         tools:ignore="ContentDescription"
         tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
-        android:id="@+id/poster_4"
-        android:layout_width="180dp"
-        android:layout_height="270dp"
+        android:id="@+id/poster_3"
+        android:layout_width="78dp"
+        android:layout_height="120dp"
         android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/poster_4"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/poster_2"
+        app:layout_constraintTop_toTopOf="@+id/poster_2"
+        tools:ignore="ContentDescription"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/poster_4"
+        android:layout_width="78dp"
+        android:layout_height="120dp"
+        android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/poster_3"
-        app:layout_constraintTop_toBottomOf="@+id/poster_2"
+        app:layout_constraintTop_toTopOf="@+id/poster_3"
         tools:ignore="ContentDescription"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/title_1"
-        style="@style/TitleText"
+        style="@style/TitleText.Landscape"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="@+id/poster_1"
-        app:layout_constraintStart_toStartOf="@+id/poster_1"
-        app:layout_constraintTop_toBottomOf="@+id/poster_1"
+        app:layout_constraintEnd_toEndOf="@id/poster_1"
+        app:layout_constraintStart_toStartOf="@id/poster_1"
+        app:layout_constraintTop_toBottomOf="@id/poster_1"
         tools:text="@tools:sample/lorem" />
 
     <TextView
         android:id="@+id/title_2"
-        style="@style/TitleText"
+        style="@style/TitleText.Landscape"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="@+id/poster_2"
@@ -79,7 +78,7 @@
 
     <TextView
         android:id="@+id/title_3"
-        style="@style/TitleText"
+        style="@style/TitleText.Landscape"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="@+id/poster_3"
@@ -89,7 +88,7 @@
 
     <TextView
         android:id="@+id/title_4"
-        style="@style/TitleText"
+        style="@style/TitleText.Landscape"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="@+id/poster_4"
@@ -99,9 +98,9 @@
 
     <ImageButton
         android:id="@+id/details_1"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:alpha="0.8"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:alpha="0.6"
         android:contentDescription="@string/details_button"
         app:layout_constraintBottom_toBottomOf="@id/poster_1"
         app:layout_constraintEnd_toEndOf="@id/poster_1"
@@ -109,9 +108,9 @@
 
     <ImageButton
         android:id="@+id/details_2"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:alpha="0.8"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:alpha="0.6"
         android:contentDescription="@string/details_button"
         app:layout_constraintBottom_toBottomOf="@id/poster_2"
         app:layout_constraintEnd_toEndOf="@id/poster_2"
@@ -119,9 +118,9 @@
 
     <ImageButton
         android:id="@+id/details_3"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:alpha="0.8"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:alpha="0.6"
         android:contentDescription="@string/details_button"
         app:layout_constraintBottom_toBottomOf="@id/poster_3"
         app:layout_constraintEnd_toEndOf="@id/poster_3"
@@ -129,11 +128,12 @@
 
     <ImageButton
         android:id="@+id/details_4"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:alpha="0.8"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:alpha="0.6"
         android:contentDescription="@string/details_button"
         app:layout_constraintBottom_toBottomOf="@id/poster_4"
         app:layout_constraintEnd_toEndOf="@id/poster_4"
         app:srcCompat="@drawable/ic_information" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
