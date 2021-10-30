@@ -1,4 +1,4 @@
-package com.example.kinogramm
+package com.example.kinogramm.view.details
 
 import android.app.Activity
 import android.content.Context
@@ -11,7 +11,11 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.kinogramm.R
+import com.example.kinogramm.data.FilmDataSource
 import com.example.kinogramm.databinding.ActivityFilmDetailsBinding
+import com.example.kinogramm.domain.Film
+import com.example.kinogramm.view.main.MainActivity
 
 
 private const val TAG = "FilmDetailsActivity"
@@ -19,7 +23,7 @@ private const val TAG = "FilmDetailsActivity"
 class FilmDetailsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityFilmDetailsBinding
     private lateinit var film: Film
-    private var isLiked = false
+    private var isFavourite = false
     private var userComment = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,13 +41,13 @@ class FilmDetailsActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putBoolean(FILM_LIKED, isLiked)
+        outState.putBoolean(FILM_LIKED, isFavourite)
         outState.putString(USER_COMMENT, userComment)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        isLiked = savedInstanceState.getBoolean(FILM_LIKED)
+        isFavourite = savedInstanceState.getBoolean(FILM_LIKED)
         userComment = savedInstanceState.getString(USER_COMMENT) ?: ""
         updateResultState()
     }
@@ -51,7 +55,7 @@ class FilmDetailsActivity : AppCompatActivity() {
     private fun setButtons() {
         binding.run {
             likeButton.setOnClickListener {
-                isLiked = !isLiked
+                isFavourite = !isFavourite
                 updateResultState()
             }
 
@@ -86,15 +90,15 @@ class FilmDetailsActivity : AppCompatActivity() {
         updateLikeButtonColor()
 
         Intent()
-            .putExtra(MainActivity.EXTRA_LIKED, isLiked)
+            .putExtra(MainActivity.EXTRA_LIKED, isFavourite)
             .putExtra(MainActivity.EXTRA_USER_COMMENT, userComment)
-            .also { data ->
-                setResult(Activity.RESULT_OK, data)
+            .also { intent ->
+                setResult(Activity.RESULT_OK, intent)
             }
     }
 
     private fun updateLikeButtonColor() {
-        val newColor = if (isLiked) {
+        val newColor = if (isFavourite) {
             R.color.red_heart
         } else R.color.gray_icon_alpha_50
 
@@ -116,6 +120,7 @@ class FilmDetailsActivity : AppCompatActivity() {
         val foundFilm = FilmDataSource.films.find { it.id == filmId }
         if (foundFilm != null) {
             film = foundFilm
+            isFavourite = intent.getBooleanExtra(EXTRA_IS_FAVOURITE, false)
         } else {
             Log.w(TAG, "Film with id = $filmId not found.")
             finish()
@@ -124,12 +129,14 @@ class FilmDetailsActivity : AppCompatActivity() {
 
     companion object {
         private const val EXTRA_FILM_ID = "filmId"
+        private const val EXTRA_IS_FAVOURITE = "isFavourite"
         private const val FILM_LIKED = "liked"
         private const val USER_COMMENT = "userComment"
 
-        fun newIntent(context: Context, filmId: Int) =
+        fun newIntent(context: Context, filmId: Int, isFavourite: Boolean) =
             Intent(context, FilmDetailsActivity::class.java).apply {
                 putExtra(EXTRA_FILM_ID, filmId)
+                putExtra(EXTRA_IS_FAVOURITE, isFavourite)
             }
     }
 }
