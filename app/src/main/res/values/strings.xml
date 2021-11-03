@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Kinogramm</string>
+    <string name="sorry_no_films_found">Sorry, no films found.</string>
+    <string name="sad_face_icon">Sad face icon.</string>
+    <string name="details_button">Details button</string>
+    <string name="film_poster">Film poster</string>
+    <string name="share">Share</string>
+    <string name="like">Like</string>
+    <string name="add_comment">Add comment</string>
 </resources>
