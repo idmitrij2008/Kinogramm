@@ -1,4 +1,4 @@
-package com.example.kinogramm.view.main
+package com.example.kinogramm.view.catalog
 
 import android.content.Context
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
@@ -45,36 +45,34 @@ class FilmsAdapter(private val context: Context) :
     }
 
     override fun onBindViewHolder(holder: FilmViewHolder, position: Int) {
+        val wrappedFilm = wrappedFilms[position]
+
         if (holder.binding is FilmListItemBinding) {
             holder.binding.run {
-                wrappedFilms[position].let { wrappedFilm ->
-                    poster.setImageResource(wrappedFilm.posterResId)
-                    poster.contentDescription = wrappedFilm.title
-                    title.text = wrappedFilm.title
-                    if (wrappedFilm.isLastClicked) title.setTextColor(
-                        context.getColor(
-                            R.color.text_highlighted
-                        )
+                poster.setImageResource(wrappedFilm.posterResId)
+                poster.contentDescription = wrappedFilm.title
+                title.text = wrappedFilm.title
+                if (wrappedFilm.isLastClicked) title.setTextColor(
+                    context.getColor(
+                        R.color.text_highlighted
                     )
-                    details.setOnClickListener {
-                        detailsOnClick?.invoke(wrappedFilm)
-                    }
+                )
+                details.setOnClickListener {
+                    detailsOnClick?.invoke(wrappedFilm)
                 }
             }
         } else if (holder.binding is FilmListItemLandBinding) {
             holder.binding.run {
-                wrappedFilms[position].let { wrappedFilm ->
-                    poster.setImageResource(wrappedFilm.posterResId)
-                    poster.contentDescription = wrappedFilm.title
-                    title.text = wrappedFilm.title
-                    if (wrappedFilm.isLastClicked) title.setTextColor(
-                        context.getColor(
-                            R.color.text_highlighted
-                        )
+                poster.setImageResource(wrappedFilm.posterResId)
+                poster.contentDescription = wrappedFilm.title
+                title.text = wrappedFilm.title
+                if (wrappedFilm.isLastClicked) title.setTextColor(
+                    context.getColor(
+                        R.color.text_highlighted
                     )
-                    details.setOnClickListener {
-                        detailsOnClick?.invoke(wrappedFilm)
-                    }
+                )
+                details.setOnClickListener {
+                    detailsOnClick?.invoke(wrappedFilm)
                 }
             }
         }

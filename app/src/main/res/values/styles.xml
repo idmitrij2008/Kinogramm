@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="ToolbarStyle" parent="@style/Widget.MaterialComponents.Toolbar">
+        <item name="android:background">?colorPrimary</item>
+    </style>
+
     <style name="TitleText">
         <item name="android:fontFamily">@font/quicksand_medium</item>
         <item name="android:textSize">20sp</item>
@@ -16,7 +20,7 @@
 
     <style name="DescriptionText" parent="TitleText">
         <item name="android:textSize">14sp</item>
-        <item name="android:maxLines">10</item>
+        <item name="android:maxLines">100</item>
     </style>
 
     <style name="DescriptionText.Landscape" parent="DescriptionText">

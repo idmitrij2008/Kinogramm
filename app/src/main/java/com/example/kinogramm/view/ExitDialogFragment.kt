@@ -1,4 +1,4 @@
-package com.example.kinogramm.view.main
+package com.example.kinogramm.view
 
 import android.app.Dialog
 import android.os.Bundle
@@ -7,6 +7,10 @@ import androidx.fragment.app.DialogFragment
 import com.example.kinogramm.R
 
 class ExitDialogFragment : DialogFragment() {
+
+    companion object {
+        const val NAME = "ExitDialogFragment"
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {

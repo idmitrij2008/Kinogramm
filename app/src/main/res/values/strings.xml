@@ -6,9 +6,11 @@
     <string name="share">Share</string>
     <string name="like">Like</string>
     <string name="add_comment">Add comment</string>
-    <string name="favourites">Favourites:</string>
+    <string name="favourites">Favourites</string>
     <string name="show_favourites">Show favourites</string>
     <string name="confirm_exit">Confirm exit</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="all_films">All films</string>
 </resources>

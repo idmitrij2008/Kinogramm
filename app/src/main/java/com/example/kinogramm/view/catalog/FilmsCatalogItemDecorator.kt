@@ -6,11 +6,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kinogramm.dpToPixel
 
-class FilmsItemDecorator : RecyclerView.ItemDecoration() {
+private const val OFFSET_DP = 8f
 
-    companion object {
-        private const val OFFSET_DP = 8f
-    }
+class FilmsCatalogItemDecorator : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(
         outRect: Rect,

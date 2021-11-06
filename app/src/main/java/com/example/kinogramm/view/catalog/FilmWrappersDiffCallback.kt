@@ -1,4 +1,4 @@
-package com.example.kinogramm.view.main
+package com.example.kinogramm.view.catalog
 
 import androidx.recyclerview.widget.DiffUtil
 
