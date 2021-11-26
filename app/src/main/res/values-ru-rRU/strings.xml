@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Kinogramm</string>
+    <string name="sad_face_icon">Грустное лицо</string>
+    <string name="details_button">Детали</string>
+    <string name="film_poster">Постер</string>
+    <string name="share">Поделиться</string>
+    <string name="like">Нравится</string>
+    <string name="add_comment">Добавить комментарий</string>
+</resources>
