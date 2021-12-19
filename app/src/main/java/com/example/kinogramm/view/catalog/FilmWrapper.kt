@@ -1,4 +1,4 @@
-package com.example.kinogramm.view.main
+package com.example.kinogramm.view.catalog
 
 import com.example.kinogramm.domain.Film
 

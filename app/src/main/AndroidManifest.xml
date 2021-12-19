@@ -10,13 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Kinogramm">
         <activity
-            android:name=".view.favourites.FavouriteFilmsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".view.details.FilmDetailsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".view.main.MainActivity"
+            android:name=".view.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

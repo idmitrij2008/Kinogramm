@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_background"
-    tools:context=".view.favourites.FavouriteFilmsActivity">
+    android:background="@color/gray_background">
 
     <TextView
         android:id="@+id/favourites_list_label"
@@ -24,9 +23,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/favourite_films_rv"
         android:layout_width="0dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
