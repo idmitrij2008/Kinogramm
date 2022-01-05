@@ -1,28 +1,25 @@
 package com.example.kinogramm.view.catalog
 
-import android.content.Context
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import com.example.kinogramm.R
 import com.example.kinogramm.databinding.FilmListItemBinding
 import com.example.kinogramm.databinding.FilmListItemLandBinding
+import com.example.kinogramm.domain.Film
 
-class FilmsAdapter(private val context: Context) :
+class FilmsAdapter(private val viewModel: FilmsCatalogViewModel) :
     RecyclerView.Adapter<FilmsAdapter.FilmViewHolder>() {
 
-    var wrappedFilms = listOf<FilmWrapper>()
+    var films = listOf<Film>()
         set(value) {
-            val diffCallback = FilmWrappersDiffCallback(wrappedFilms, value)
+            val diffCallback = FilmWrappersDiffCallback(films, value)
             val diffResult = DiffUtil.calculateDiff(diffCallback)
             diffResult.dispatchUpdatesTo(this)
             field = value
         }
-
-    var detailsOnClick: ((FilmWrapper) -> Unit)? = null
 
     class FilmViewHolder(val binding: ViewBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -45,40 +42,22 @@ class FilmsAdapter(private val context: Context) :
     }
 
     override fun onBindViewHolder(holder: FilmViewHolder, position: Int) {
-        val wrappedFilm = wrappedFilms[position]
+        val wrappedFilm = films[position]
 
         if (holder.binding is FilmListItemBinding) {
             holder.binding.run {
-                poster.setImageResource(wrappedFilm.posterResId)
-                poster.contentDescription = wrappedFilm.title
-                title.text = wrappedFilm.title
-                if (wrappedFilm.isLastClicked) title.setTextColor(
-                    context.getColor(
-                        R.color.text_highlighted
-                    )
-                )
-                details.setOnClickListener {
-                    detailsOnClick?.invoke(wrappedFilm)
-                }
+                film = wrappedFilm
+                viewModel = this@FilmsAdapter.viewModel
             }
         } else if (holder.binding is FilmListItemLandBinding) {
             holder.binding.run {
-                poster.setImageResource(wrappedFilm.posterResId)
-                poster.contentDescription = wrappedFilm.title
-                title.text = wrappedFilm.title
-                if (wrappedFilm.isLastClicked) title.setTextColor(
-                    context.getColor(
-                        R.color.text_highlighted
-                    )
-                )
-                details.setOnClickListener {
-                    detailsOnClick?.invoke(wrappedFilm)
-                }
+                film = wrappedFilm
+                viewModel = this@FilmsAdapter.viewModel
             }
         }
     }
 
     override fun getItemCount(): Int {
-        return wrappedFilms.size
+        return films.size
     }
 }

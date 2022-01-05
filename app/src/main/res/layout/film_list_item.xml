@@ -1,44 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.example.kinogramm.view.catalog.FilmsCatalogViewModel" />
+
+        <variable
+            name="film"
+            type="com.example.kinogramm.domain.Film" />
+
+    </data>
+
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/poster"
-            android:layout_width="180dp"
-            android:layout_height="270dp"
-            android:scaleType="fitXY"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="ContentDescription"
-            tools:srcCompat="@tools:sample/avatars" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/title"
-            style="@style/TitleText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="@+id/poster"
-            app:layout_constraintStart_toStartOf="@+id/poster"
-            app:layout_constraintTop_toBottomOf="@+id/poster"
-            tools:text="@tools:sample/lorem" />
+            <ImageView
+                android:id="@+id/poster"
+                android:layout_width="180dp"
+                android:layout_height="270dp"
+                android:contentDescription="@{film.title}"
+                android:scaleType="fitXY"
+                app:imageUri="@{film.posterPath}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@tools:sample/avatars" />
 
-        <ImageButton
-            android:id="@+id/details"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:alpha="0.8"
-            android:contentDescription="@string/details_button"
-            app:layout_constraintBottom_toBottomOf="@id/poster"
-            app:layout_constraintEnd_toEndOf="@id/poster"
-            app:srcCompat="@drawable/ic_information" />
+            <TextView
+                android:id="@+id/title"
+                style="@style/TitleText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{film.title}"
+                app:layout_constraintEnd_toEndOf="@+id/poster"
+                app:layout_constraintStart_toStartOf="@+id/poster"
+                app:layout_constraintTop_toBottomOf="@+id/poster"
+                tools:text="@tools:sample/lorem" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>
+            <ImageButton
+                android:id="@+id/details"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:alpha="0.8"
+                android:contentDescription="@string/details_button"
+                android:onClick="@{() -> viewModel.showDetailsFor(film)}"
+                app:layout_constraintBottom_toBottomOf="@id/poster"
+                app:layout_constraintEnd_toEndOf="@id/poster"
+                app:srcCompat="@drawable/ic_information" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

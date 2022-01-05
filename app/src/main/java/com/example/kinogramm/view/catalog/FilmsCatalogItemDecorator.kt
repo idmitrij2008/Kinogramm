@@ -4,7 +4,7 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.kinogramm.dpToPixel
+import com.example.kinogramm.util.dpToPixel
 
 private const val OFFSET_DP = 8f
 
