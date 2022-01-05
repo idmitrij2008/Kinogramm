@@ -1,38 +1,46 @@
 package com.example.kinogramm.view.catalog
 
 import android.os.Bundle
-import android.view.*
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.LoadState
 import com.example.kinogramm.R
-import com.example.kinogramm.data.FilmDataSource
 import com.example.kinogramm.databinding.FragmentFilmsCatalogBinding
-import com.example.kinogramm.view.details.FilmDetailsFragment
+import com.example.kinogramm.view.MainViewModel
 import com.example.kinogramm.view.main.FilmsCatalogItemDecorator
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
-private const val UNKNOWN_FILM_ID = -1
-private const val LAST_CLICKED_FILM_ID = "lastClickedFilmId"
+private val TAG = "FilmsCatalogFragment"
 
+@ExperimentalPagingApi
 class FilmsCatalogFragment : Fragment() {
-
-    companion object {
-        const val NAME = "FilmsCatalogFragment"
-
-        fun newInstance() = FilmsCatalogFragment()
-    }
-
     private var _binding: FragmentFilmsCatalogBinding? = null
     private val binding get() = _binding!!
-
-    private var lastClickedFilmId = UNKNOWN_FILM_ID
-
-    private val wrappedFilms: List<FilmWrapper>
-        get() = FilmDataSource.films.map {
-            FilmWrapper(it, it.id == lastClickedFilmId)
-        }
+    private lateinit var viewModel: FilmsCatalogViewModel
+    private val mainViewModel: MainViewModel by activityViewModels()
+    private var filmsAdapter: FilmsAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lastClickedFilmId = savedInstanceState?.getInt(LAST_CLICKED_FILM_ID) ?: UNKNOWN_FILM_ID
+        viewModel = ViewModelProvider(
+            this,
+            FilmCatalogViewModelFactory(requireActivity().application)
+        ).get(
+            FilmsCatalogViewModel::class.java
+        )
+
+        observeShouldShowDetails()
+        observeLoadState()
     }
 
     override fun onCreateView(
@@ -40,43 +48,72 @@ class FilmsCatalogFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFilmsCatalogBinding.inflate(inflater, container, false)
-        setHasOptionsMenu(true)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupFilmsRecyclerView()
+        binding.swipeRefresh?.setOnRefreshListener {
+            filmsAdapter?.refresh()
+        }
+
+        observeNewFilmsData()
+    }
+
+    private fun observeShouldShowDetails() {
+        viewModel.showDetailsForFilm.observe(this) { film ->
+            mainViewModel.lastClickedFilmId = film.remoteId
+            findNavController().navigate(
+                FilmsCatalogFragmentDirections.actionCatalogFragmentToFilmDetailsFragment(
+                    film
+                )
+            )
+        }
+    }
+
+    private fun observeNewFilmsData() {
+        viewModel.films.observe(viewLifecycleOwner) { pagingData ->
+            lifecycleScope.launch {
+                filmsAdapter?.submitData(pagingData)
+            }
+        }
+    }
+
+    private fun observeLoadState() {
+        lifecycleScope.launchWhenStarted {
+            filmsAdapter?.loadStateFlow?.collectLatest { loadStates ->
+                binding.swipeRefresh?.isRefreshing = loadStates.refresh is LoadState.Loading
+                if (loadStates.refresh is LoadState.Error) {
+                    Log.d(TAG, "LoadState.Error")
+                    handleErrorResult()
+                }
+            }
+        }
     }
 
     private fun setupFilmsRecyclerView() {
-        binding.catalogRv.adapter = FilmsAdapter(requireContext()).apply {
-            wrappedFilms = this@FilmsCatalogFragment.wrappedFilms
-
-            detailsOnClick = { film ->
-                parentFragmentManager.beginTransaction()
-                    .replace(
-                        R.id.main_fragment_container,
-                        FilmDetailsFragment.newInstance(film.id)
-                    )
-                    .addToBackStack(FilmDetailsFragment.NAME)
-                    .commit()
-
-                lastClickedFilmId = film.id
-                wrappedFilms = this@FilmsCatalogFragment.wrappedFilms
-            }
-        }
-
+        filmsAdapter = FilmsAdapter(viewModel, mainViewModel.lastClickedFilmId)
+        binding.catalogRv.adapter = filmsAdapter
         binding.catalogRv.addItemDecoration(FilmsCatalogItemDecorator())
+        binding.catalogRv.setHasFixedSize(true)
+    }
+
+    private fun handleErrorResult() {
+        Snackbar.make(
+            binding.coordinatorLayout ?: binding.root,
+            requireContext().getString(R.string.load_error),
+            Snackbar.LENGTH_LONG
+        )
+            .setAction(requireContext().getString(R.string.try_again)) {
+                filmsAdapter?.refresh()
+            }
+            .setActionTextColor(requireContext().getColor(R.color.white))
+            .show()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putInt(LAST_CLICKED_FILM_ID, lastClickedFilmId)
     }
 }

@@ -1,73 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/gray_background">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <ImageView
-        android:id="@+id/poster"
-        android:layout_width="180dp"
-        android:layout_height="280dp"
-        android:layout_marginStart="32dp"
-        android:contentDescription="@string/film_poster"
-        android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
+    <data>
 
-    <TextView
-        android:id="@+id/description"
-        style="@style/DescriptionText.Landscape"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="24dp"
-        app:layout_constraintBottom_toBottomOf="@+id/poster"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/poster"
-        app:layout_constraintTop_toTopOf="@+id/poster"
-        tools:text="@tools:sample/lorem/random" />
+        <import type="android.view.View" />
 
-    <ImageButton
-        android:id="@+id/like_button"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@color/transparent"
-        android:contentDescription="@string/like"
-        android:scaleType="fitXY"
-        app:layout_constraintEnd_toEndOf="@+id/poster"
-        app:layout_constraintTop_toTopOf="@+id/poster"
-        app:srcCompat="@drawable/ic_heart" />
+        <variable
+            name="viewModel"
+            type="com.example.kinogramm.view.details.FilmDetailsViewModel" />
 
-    <ImageButton
-        android:id="@+id/add_comment_button"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/transparent"
-        android:contentDescription="@string/add_comment"
-        android:scaleType="fitXY"
-        app:layout_constraintEnd_toEndOf="@+id/poster"
-        app:layout_constraintTop_toBottomOf="@+id/like_button"
-        app:srcCompat="@drawable/ic_add_comment" />
+    </data>
 
-    <EditText
-        android:id="@+id/user_comment"
-        style="@style/DescriptionText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
-        android:gravity="start"
-        android:importantForAutofill="no"
-        android:inputType="text"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/poster"
-        app:layout_constraintTop_toTopOf="@id/poster"
-        tools:ignore="LabelFor"
-        tools:text="A comment" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/gray_background">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:id="@+id/poster"
+            android:layout_width="180dp"
+            android:layout_height="280dp"
+            android:layout_marginStart="32dp"
+            android:contentDescription="@string/film_poster"
+            android:scaleType="fitXY"
+            app:imageUri="@{viewModel.film.posterPath}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/description"
+            style="@style/DescriptionText.Landscape"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="24dp"
+            android:text="@{viewModel.film.overview}"
+            android:visibility="@{viewModel.addCommentClicked ? View.GONE : View.VISIBLE }"
+            app:layout_constraintBottom_toBottomOf="@+id/poster"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/poster"
+            app:layout_constraintTop_toTopOf="@+id/poster" />
+
+        <ImageButton
+            android:id="@+id/like_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@color/transparent"
+            android:contentDescription="@string/like"
+            android:onClick="@{() -> viewModel.likeClicked()}"
+            android:scaleType="fitXY"
+            app:layout_constraintEnd_toEndOf="@+id/poster"
+            app:layout_constraintTop_toTopOf="@+id/poster"
+            app:srcCompat="@drawable/ic_heart" />
+
+        <ImageButton
+            android:id="@+id/add_comment_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/transparent"
+            android:contentDescription="@string/add_comment"
+            android:onClick="@{() -> viewModel.addingComment(true)}"
+            android:scaleType="fitXY"
+            app:layout_constraintEnd_toEndOf="@+id/poster"
+            app:layout_constraintTop_toBottomOf="@+id/like_button"
+            app:srcCompat="@drawable/ic_add_comment" />
+
+        <EditText
+            android:id="@+id/user_comment"
+            style="@style/DescriptionText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:gravity="start"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:visibility="@{viewModel.addCommentClicked ? View.VISIBLE : View.GONE }"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/poster"
+            app:layout_constraintTop_toTopOf="@id/poster"
+            tools:ignore="LabelFor"
+            tools:text="A comment" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

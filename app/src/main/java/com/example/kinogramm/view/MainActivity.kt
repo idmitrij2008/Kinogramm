@@ -5,21 +5,20 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.example.kinogramm.R
 import com.example.kinogramm.databinding.ActivityMainBinding
-import com.example.kinogramm.view.catalog.FilmsCatalogFragment
-import com.example.kinogramm.view.details.FilmDetailsFragment
-import com.example.kinogramm.view.favourites.FavouriteFilmsFragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.example.kinogramm.view.exit.ExitViewModel
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-
-    private val lastBackStackEntry: FragmentManager.BackStackEntry
-        get() = supportFragmentManager.run { getBackStackEntryAt(backStackEntryCount - 1) }
+    private lateinit var navHostFragment: NavHostFragment
+    private var destinationListener: NavController.OnDestinationChangedListener? = null
+    private val exitViewModel: ExitViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,84 +27,47 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.mainToolbar)
 
-        savedInstanceState?.let {
-            hideBottomNavIfNeeded()
-        } ?: run {
-            showFragment(
-                FilmsCatalogFragment.newInstance(),
-                FilmsCatalogFragment.NAME
+        navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.main_fragment_container) as NavHostFragment
+        binding.bottomNavView?.setupWithNavController(navHostFragment.navController)
+
+        observeNavDestinations()
+
+        exitViewModel.exit.observe(this) {
+            finish()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        destinationListener?.let { listener ->
+            navHostFragment.navController.removeOnDestinationChangedListener(
+                listener
             )
         }
+    }
 
-        setBottomNav()
-
-        supportFragmentManager.addOnBackStackChangedListener {
-            when (lastBackStackEntry.name) {
-                FilmDetailsFragment.NAME -> {
-                    binding.bottomNavView?.visibility = View.GONE
-                    supportActionBar?.hide()
+    private fun observeNavDestinations() {
+        destinationListener =
+            NavController.OnDestinationChangedListener { _, destination, _ ->
+                when (destination.id) {
+                    R.id.film_details_fragment -> {
+                        binding.bottomNavView?.visibility = View.GONE
+                        supportActionBar?.hide()
+                    }
+                    else -> {
+                        binding.bottomNavView?.visibility = View.VISIBLE
+                        supportActionBar?.show()
+                    }
                 }
-                else -> {
-                    binding.bottomNavView?.visibility = View.VISIBLE
-                    supportActionBar?.show()
-                }
-            }
-        }
-    }
-
-    private fun hideBottomNavIfNeeded() {
-        if (lastBackStackEntry.name == FilmDetailsFragment.NAME) {
-            binding.bottomNavView?.visibility = View.GONE
-        }
-    }
-
-    private fun setBottomNav() {
-        if (supportFragmentManager.backStackEntryCount > 0) {
-            binding.bottomNavView?.selectCorrectMenuItem()
-        }
-
-        binding.bottomNavView?.setOnItemSelectedListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.catalog_fragment -> showFragment(
-                    fragment = FilmsCatalogFragment.newInstance(),
-                    backStackName = FilmsCatalogFragment.NAME
-                )
-                R.id.favourite_films_fragment -> {
-                    showFragment(
-                        fragment = FavouriteFilmsFragment.newInstance(),
-                        backStackName = FavouriteFilmsFragment.NAME
-                    )
-                }
-            }
-            true
-        }
-    }
-
-    private fun BottomNavigationView.selectCorrectMenuItem() {
-        when (lastBackStackEntry.name) {
-            FilmsCatalogFragment.NAME -> {
-                selectedItemId = R.id.catalog_fragment
-            }
-            FavouriteFilmsFragment.NAME -> {
-                selectedItemId = R.id.favourite_films_fragment
-            }
-        }
-    }
-
-    private fun showFragment(fragment: Fragment, backStackName: String) {
-        if (supportFragmentManager.backStackEntryCount == 0 || lastBackStackEntry.name != backStackName) {
-            supportFragmentManager.beginTransaction().run {
-                replace(R.id.main_fragment_container, fragment)
-                addToBackStack(backStackName)
-                commit()
-            }
-        }
+            }.apply { navHostFragment.navController.addOnDestinationChangedListener(this) }
     }
 
     override fun onBackPressed() {
-        if (supportFragmentManager.backStackEntryCount > 0 && lastBackStackEntry.name == FilmDetailsFragment.NAME) {
-            supportFragmentManager.popBackStack()
-        } else ExitDialogFragment().show(supportFragmentManager, ExitDialogFragment.NAME)
+        when (navHostFragment.navController.currentDestination?.id) {
+            R.id.catalog_fragment, R.id.favourite_films_fragment -> showExitDialog()
+            else -> navHostFragment.navController.popBackStack()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -123,15 +85,15 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.action_show_favourites -> {
-                supportFragmentManager.beginTransaction()
-                    .replace(
-                        R.id.main_fragment_container,
-                        FavouriteFilmsFragment.newInstance()
-                    )
-                    .addToBackStack(FavouriteFilmsFragment.NAME)
-                    .commit()
+                navHostFragment.navController.navigate(R.id.favourite_films_fragment)
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
+
+    private fun showExitDialog() {
+        navHostFragment.navController.navigate(
+            R.id.exit_dialog_fragment
+        )
+    }
 }

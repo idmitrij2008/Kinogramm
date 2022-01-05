@@ -29,7 +29,7 @@ class FavouriteFilmsAdapter :
     }
 
     override fun onBindViewHolder(holder: FavouriteFilmViewHolder, position: Int) {
-        holder.binding.title.text = films[position].title
+        holder.binding.film = films[position]
     }
 
     override fun getItemCount(): Int {
