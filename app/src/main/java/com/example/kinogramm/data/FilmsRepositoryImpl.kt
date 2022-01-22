@@ -15,6 +15,7 @@ import com.example.kinogramm.data.network.FilmsNetworkMapper
 import com.example.kinogramm.domain.Film
 import com.example.kinogramm.domain.IFilmsRepository
 import com.example.kinogramm.domain.Result
+import com.example.kinogramm.util.Constants.API_KEY
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -92,7 +93,7 @@ class FilmsRepositoryImpl(private val application: Application) : IFilmsReposito
 
         (filmsLD as MutableLiveData<Result<List<Film>>>).postValue(Result.Loading())
         Log.d(TAG, "Trying to load films from network...")
-        val apiResponse = FilmsApiClient.instance.getPopularFilms()
+        val apiResponse = FilmsApiClient.instance.getPopularFilms(API_KEY)
         apiResponse.body()?.let { data ->
             Log.d(TAG, "${data.films.size} films loaded.")
             return@withContext data.films
@@ -102,7 +103,6 @@ class FilmsRepositoryImpl(private val application: Application) : IFilmsReposito
             return@withContext emptyList()
         }
     }
-
 
     private val hasInternetConnection: Boolean
         get() {
