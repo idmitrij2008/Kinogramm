@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -15,8 +15,18 @@ import com.example.kinogramm.databinding.FragmentFavouriteFilmsBinding
 class FavouriteFilmsFragment : Fragment() {
     private var _binding: FragmentFavouriteFilmsBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: FavouriteFilmsViewModel by viewModels()
+    private lateinit var viewModel: FavouriteFilmsViewModel
     private lateinit var favouriteFilmsAdapter: FavouriteFilmsAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(
+            this,
+            FavouriteFilmsViewModelFactory(requireActivity().application)
+        ).get(
+            FavouriteFilmsViewModel::class.java
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

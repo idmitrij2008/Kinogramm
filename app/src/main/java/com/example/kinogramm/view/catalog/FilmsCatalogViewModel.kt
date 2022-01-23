@@ -1,16 +1,14 @@
 package com.example.kinogramm.view.catalog
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.kinogramm.data.FilmsRepositoryImpl
+import androidx.lifecycle.ViewModel
 import com.example.kinogramm.domain.Film
+import com.example.kinogramm.domain.IFilmsRepository
 import com.example.kinogramm.domain.usecases.GetFilmsUseCase
 import com.example.kinogramm.domain.usecases.RefreshFilmsUseCase
 
-class FilmsCatalogViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository = FilmsRepositoryImpl(application)
+class FilmsCatalogViewModel(repository: IFilmsRepository) : ViewModel() {
     private val getFilmUseCase = GetFilmsUseCase(repository)
     private val refreshFilmsUseCase = RefreshFilmsUseCase(repository)
 

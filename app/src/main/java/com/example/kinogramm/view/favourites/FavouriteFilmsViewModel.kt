@@ -1,18 +1,16 @@
 package com.example.kinogramm.view.favourites
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.kinogramm.data.FilmsRepositoryImpl
 import com.example.kinogramm.domain.Film
+import com.example.kinogramm.domain.IFilmsRepository
 import com.example.kinogramm.domain.usecases.GetLikedFilmsUseCase
 import com.example.kinogramm.domain.usecases.LikeFilmUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class FavouriteFilmsViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository = FilmsRepositoryImpl(application)
+class FavouriteFilmsViewModel(repository: IFilmsRepository) : ViewModel() {
     private val getLikedFilmsUseCase = GetLikedFilmsUseCase(repository)
     private val likeFilmUseCase = LikeFilmUseCase(repository)
 

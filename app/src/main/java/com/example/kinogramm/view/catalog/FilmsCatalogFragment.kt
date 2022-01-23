@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.kinogramm.R
 import com.example.kinogramm.databinding.FragmentFilmsCatalogBinding
@@ -19,11 +19,18 @@ private val TAG = "FilmsCatalogFragment"
 class FilmsCatalogFragment : Fragment() {
     private var _binding: FragmentFilmsCatalogBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: FilmsCatalogViewModel by viewModels()
+    private lateinit var viewModel: FilmsCatalogViewModel
     private var filmsAdapter: FilmsAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(
+            this,
+            FilmCatalogViewModelFactory(requireActivity().application)
+        ).get(
+            FilmsCatalogViewModel::class.java
+        )
+
         viewModel.showDetailsForFilm.observe(this) { film ->
             findNavController().navigate(
                 FilmsCatalogFragmentDirections.actionCatalogFragmentToFilmDetailsFragment(

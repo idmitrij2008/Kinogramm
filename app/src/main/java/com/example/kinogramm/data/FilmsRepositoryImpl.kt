@@ -10,7 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.example.kinogramm.data.db.AppDatabase
 import com.example.kinogramm.data.db.FilmsDbMapper
-import com.example.kinogramm.data.network.FilmsApiClient
+import com.example.kinogramm.data.network.FilmsApi
 import com.example.kinogramm.data.network.FilmsNetworkMapper
 import com.example.kinogramm.domain.Film
 import com.example.kinogramm.domain.IFilmsRepository
@@ -23,10 +23,14 @@ import kotlinx.coroutines.withContext
 
 private const val TAG = "FilmsRepository"
 
-class FilmsRepositoryImpl(private val application: Application) : IFilmsRepository {
+class FilmsRepositoryImpl(
+    private val application: Application,
+    appDatabase: AppDatabase,
+    private val filmsApi: FilmsApi
+) : IFilmsRepository {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
-    private val filmsDao = AppDatabase.getInstance(application).filmsDao()
+    private val filmsDao = appDatabase.filmsDao()
     private val dbMapper = FilmsDbMapper()
     private val networkMapper = FilmsNetworkMapper()
 
@@ -93,7 +97,7 @@ class FilmsRepositoryImpl(private val application: Application) : IFilmsReposito
 
         (filmsLD as MutableLiveData<Result<List<Film>>>).postValue(Result.Loading())
         Log.d(TAG, "Trying to load films from network...")
-        val apiResponse = FilmsApiClient.instance.getPopularFilms(API_KEY)
+        val apiResponse = filmsApi.getPopularFilms(API_KEY)
         apiResponse.body()?.let { data ->
             Log.d(TAG, "${data.films.size} films loaded.")
             return@withContext data.films
