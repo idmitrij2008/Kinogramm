@@ -7,7 +7,7 @@ import com.example.kinogramm.util.Constants
 @Entity(tableName = Constants.REMOTE_KEYS_TABLE)
 data class RemoteKeys(
     @PrimaryKey(autoGenerate = false)
-    val filmId: Long,
+    val filmId: Int,
     val prevKey: Int?,
     val nextKey: Int?
 )
