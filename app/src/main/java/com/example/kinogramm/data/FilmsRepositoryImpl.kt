@@ -9,9 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.example.kinogramm.data.db.AppDatabase
-import com.example.kinogramm.data.db.FilmsDbMapper
 import com.example.kinogramm.data.network.FilmsApi
-import com.example.kinogramm.data.network.FilmsNetworkMapper
 import com.example.kinogramm.domain.Film
 import com.example.kinogramm.domain.IFilmsRepository
 import com.example.kinogramm.domain.Result
@@ -29,19 +27,17 @@ class FilmsRepositoryImpl(
     private val filmsApi: FilmsApi
 ) : IFilmsRepository {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
-
     private val filmsDao = appDatabase.filmsDao()
-    private val dbMapper = FilmsDbMapper()
-    private val networkMapper = FilmsNetworkMapper()
+    private val filmMapper = FilmMapper()
 
     private val filmsLD: LiveData<Result<List<Film>>> =
         Transformations.map(filmsDao.getFilmsList()) {
-            Result.Success(dbMapper.mapListDbModelToListEntity(it))
+            Result.Success(filmMapper.mapListModelToListEntity(it))
         }
 
     override fun getLikedFilmsLD(): LiveData<List<Film>> =
         Transformations.map(filmsDao.getLikedFilmsList()) {
-            dbMapper.mapListDbModelToListEntity(it)
+            filmMapper.mapListModelToListEntity(it)
         }
 
     override fun getFilmsListLD(): LiveData<Result<List<Film>>> {
@@ -53,11 +49,9 @@ class FilmsRepositoryImpl(
         coroutineScope.launch {
             if (filmsDao.getCount() == 0) {
                 Log.d(TAG, "Local database is empty.")
-                val filmsFromApi = getFilmsFromApi()
-                if (filmsFromApi.isNotEmpty()) {
-                    val films =
-                        networkMapper.mapListNetworkModelToListEntity(filmsFromApi)
-                    filmsDao.insertFilms(dbMapper.mapListEntityToDbModel(films))
+                val filmModels = getFilmsFromApi()
+                if (filmModels.isNotEmpty()) {
+                    filmsDao.insertFilms(filmModels)
                 }
             } else {
                 Log.d(TAG, "Fetching films from local database.")
@@ -67,23 +61,23 @@ class FilmsRepositoryImpl(
 
     override fun getFilmLD(id: Int): LiveData<Film> =
         Transformations.map(filmsDao.getFilm(id)) {
-            dbMapper.mapDbModelToEntity(it)
+            filmMapper.mapModelToEntity(it)
         }
 
     override fun invertIsLikedFor(film: Film) {
-        filmsDao.updateFilm(dbMapper.mapEntityToDbModel(film).copy(isLiked = !film.isLiked))
+        filmsDao.updateFilm(filmMapper.mapEntityToModel(film).copy(isLiked = !film.isLiked))
     }
 
     override fun refreshFilms() {
         coroutineScope.launch {
             Log.d(TAG, "Refreshing films list from network...")
-            val filmsFromApi = getFilmsFromApi()
-            val films =
-                networkMapper.mapListNetworkModelToListEntity(filmsFromApi)
+            val filmModels = getFilmsFromApi()
             if (filmsDao.getCount() == 0) {
-                filmsDao.insertFilms(dbMapper.mapListEntityToDbModel(films))
+                filmsDao.insertFilms(filmModels)
             } else {
-                filmsDao.refreshFilms(dbMapper.mapListEntityToUpdDbModel(films))
+                val films =
+                    filmMapper.mapListModelToListEntity(filmModels)
+                filmsDao.refreshFilms(filmMapper.mapListEntityToUpdDbModel(films))
             }
         }
     }

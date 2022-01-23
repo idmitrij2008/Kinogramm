@@ -4,10 +4,11 @@ import android.app.Application
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.kinogramm.data.FilmModel
 import com.example.kinogramm.util.Constants.DB_NAME
 
 @Database(
-    entities = [FilmDbModel::class],
+    entities = [FilmModel::class],
     version = 1,
     exportSchema = false
 )
