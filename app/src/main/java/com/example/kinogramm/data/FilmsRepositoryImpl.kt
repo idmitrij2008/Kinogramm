@@ -51,7 +51,7 @@ class FilmsRepositoryImpl(
                 Log.d(TAG, "Local database is empty.")
                 val filmModels = getFilmsFromApi()
                 if (filmModels.isNotEmpty()) {
-                    filmsDao.insertFilms(filmModels)
+                    filmsDao.insertAll(filmModels)
                 }
             } else {
                 Log.d(TAG, "Fetching films from local database.")
@@ -73,7 +73,7 @@ class FilmsRepositoryImpl(
             Log.d(TAG, "Refreshing films list from network...")
             val filmModels = getFilmsFromApi()
             if (filmsDao.getCount() == 0) {
-                filmsDao.insertFilms(filmModels)
+                filmsDao.insertAll(filmModels)
             } else {
                 val films =
                     filmMapper.mapListModelToListEntity(filmModels)

@@ -8,7 +8,10 @@ import com.example.kinogramm.data.FilmModel
 interface FilmsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFilms(filmDbModels: List<FilmModel>)
+    suspend fun insertAll(filmDbModels: List<FilmModel>)
+
+    @Query("DELETE FROM films_table")
+    suspend fun clearFilms()
 
     @Query("SELECT * FROM films_table")
     fun getFilmsList(): LiveData<List<FilmModel>>

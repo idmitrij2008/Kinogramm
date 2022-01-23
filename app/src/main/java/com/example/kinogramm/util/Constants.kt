@@ -8,4 +8,5 @@ object Constants {
 
     const val DB_NAME = "films_db"
     const val FILMS_TABLE = "films_table"
+    const val REMOTE_KEYS_TABLE = "remote_keys_table"
 }
