@@ -1,6 +1,7 @@
 package com.example.kinogramm.di
 
 import android.app.Application
+import androidx.paging.ExperimentalPagingApi
 import com.example.kinogramm.data.FilmsRepositoryImpl
 import com.example.kinogramm.data.db.AppDatabase
 import com.example.kinogramm.data.network.FilmsApi
@@ -52,6 +53,7 @@ object Injection {
         }
     }
 
+    @ExperimentalPagingApi
     fun provideFilmsRepository(application: Application): IFilmsRepository {
         return REPOSITORY_INSTANCE ?: FilmsRepositoryImpl(
             application,

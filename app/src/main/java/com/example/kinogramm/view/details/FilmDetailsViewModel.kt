@@ -5,12 +5,14 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.ExperimentalPagingApi
 import com.example.kinogramm.di.Injection
 import com.example.kinogramm.domain.usecases.GetFilmUseCase
 import com.example.kinogramm.domain.usecases.LikeFilmUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+@ExperimentalPagingApi
 class FilmDetailsViewModel(application: Application, filmId: Int) :
     AndroidViewModel(application) {
 

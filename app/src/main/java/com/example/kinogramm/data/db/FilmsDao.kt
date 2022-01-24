@@ -1,6 +1,7 @@
 package com.example.kinogramm.data.db
 
 import androidx.lifecycle.LiveData
+import androidx.paging.PagingSource
 import androidx.room.*
 import com.example.kinogramm.data.FilmModel
 
@@ -12,6 +13,9 @@ interface FilmsDao {
 
     @Query("DELETE FROM films_table")
     suspend fun clearFilms()
+
+    @Query("SELECT * FROM films_table")
+    fun getFilms(): PagingSource<Int, FilmModel>
 
     @Query("SELECT * FROM films_table")
     fun getFilmsList(): LiveData<List<FilmModel>>

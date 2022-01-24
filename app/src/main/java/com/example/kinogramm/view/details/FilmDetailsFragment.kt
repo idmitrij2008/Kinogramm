@@ -11,11 +11,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
+import androidx.paging.ExperimentalPagingApi
 import com.example.kinogramm.R
 import com.example.kinogramm.databinding.FragmentFilmDetailsBinding
 import com.example.kinogramm.domain.Film
 import com.example.kinogramm.util.hideKeyBoard
 
+@ExperimentalPagingApi
 class FilmDetailsFragment : Fragment() {
     private var _binding: FragmentFilmDetailsBinding? = null
     private val binding get() = _binding!!

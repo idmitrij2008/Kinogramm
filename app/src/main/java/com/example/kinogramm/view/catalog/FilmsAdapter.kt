@@ -3,6 +3,7 @@ package com.example.kinogramm.view.catalog
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
@@ -11,15 +12,18 @@ import com.example.kinogramm.databinding.FilmListItemLandBinding
 import com.example.kinogramm.domain.Film
 
 class FilmsAdapter(private val viewModel: FilmsCatalogViewModel) :
-    RecyclerView.Adapter<FilmsAdapter.FilmViewHolder>() {
+    PagingDataAdapter<Film, FilmsAdapter.FilmViewHolder>(COMPARATOR) {
 
-    var films = listOf<Film>()
-        set(value) {
-            val diffCallback = FilmWrappersDiffCallback(films, value)
-            val diffResult = DiffUtil.calculateDiff(diffCallback)
-            diffResult.dispatchUpdatesTo(this)
-            field = value
+    companion object {
+        private val COMPARATOR = object : DiffUtil.ItemCallback<Film>() {
+            override fun areItemsTheSame(oldItem: Film, newItem: Film): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(oldItem: Film, newItem: Film): Boolean =
+                oldItem == newItem
         }
+    }
 
     class FilmViewHolder(val binding: ViewBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -42,22 +46,18 @@ class FilmsAdapter(private val viewModel: FilmsCatalogViewModel) :
     }
 
     override fun onBindViewHolder(holder: FilmViewHolder, position: Int) {
-        val wrappedFilm = films[position]
+        val currentFilm = getItem(position)
 
         if (holder.binding is FilmListItemBinding) {
             holder.binding.run {
-                film = wrappedFilm
+                film = currentFilm
                 viewModel = this@FilmsAdapter.viewModel
             }
         } else if (holder.binding is FilmListItemLandBinding) {
             holder.binding.run {
-                film = wrappedFilm
+                film = currentFilm
                 viewModel = this@FilmsAdapter.viewModel
             }
         }
-    }
-
-    override fun getItemCount(): Int {
-        return films.size
     }
 }

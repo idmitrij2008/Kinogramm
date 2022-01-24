@@ -6,16 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.example.kinogramm.R
+import androidx.paging.ExperimentalPagingApi
 import com.example.kinogramm.databinding.FragmentFilmsCatalogBinding
-import com.example.kinogramm.domain.Film
-import com.example.kinogramm.domain.Result
 import com.example.kinogramm.view.main.FilmsCatalogItemDecorator
-import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 
 private val TAG = "FilmsCatalogFragment"
 
+@ExperimentalPagingApi
 class FilmsCatalogFragment : Fragment() {
     private var _binding: FragmentFilmsCatalogBinding? = null
     private val binding get() = _binding!!
@@ -51,9 +51,14 @@ class FilmsCatalogFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupFilmsRecyclerView()
-        loadFilms()
-        binding.swipeRefresh?.setOnRefreshListener {
-            viewModel.refreshFilms()
+//        binding.swipeRefresh?.setOnRefreshListener {
+//            viewModel.refreshFilms()
+//        }
+
+        viewModel.films.observe(viewLifecycleOwner) { pagingData ->
+            lifecycleScope.launch {
+                filmsAdapter?.submitData(pagingData)
+            }
         }
     }
 
@@ -62,47 +67,6 @@ class FilmsCatalogFragment : Fragment() {
         binding.catalogRv.adapter = filmsAdapter
         binding.catalogRv.addItemDecoration(FilmsCatalogItemDecorator())
         binding.catalogRv.setHasFixedSize(true)
-    }
-
-    private fun loadFilms() {
-        binding.catalogRv.visibility = View.INVISIBLE
-        viewModel.films.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Result.Success -> handleSuccessResult(result.data)
-                is Result.Error -> handleErrorResult()
-                is Result.Loading -> setLoadingIndicator(true)
-            }
-        }
-    }
-
-    private fun handleSuccessResult(films: List<Film>?) {
-        setLoadingIndicator(false)
-        films?.let {
-            if (films.isNotEmpty()) {
-                filmsAdapter?.films = films
-                binding.swipeRefresh?.isRefreshing = false
-                binding.catalogRv.visibility = View.VISIBLE
-            }
-        }
-    }
-
-    private fun handleErrorResult() {
-        setLoadingIndicator(false)
-        Snackbar.make(
-            binding.coordinatorLayout ?: binding.root,
-            requireContext().getString(R.string.load_error),
-            Snackbar.LENGTH_LONG
-        )
-            .setAction(requireContext().getString(R.string.try_again)) {
-                setLoadingIndicator(true)
-                viewModel.refreshFilms()
-            }
-            .setActionTextColor(requireContext().getColor(R.color.white))
-            .show()
-    }
-
-    private fun setLoadingIndicator(isLoading: Boolean) {
-        binding.swipeRefresh?.isRefreshing = isLoading
     }
 
     override fun onDestroyView() {

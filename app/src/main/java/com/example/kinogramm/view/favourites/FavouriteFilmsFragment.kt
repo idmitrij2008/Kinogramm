@@ -7,11 +7,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kinogramm.databinding.FragmentFavouriteFilmsBinding
 
+@ExperimentalPagingApi
 class FavouriteFilmsFragment : Fragment() {
     private var _binding: FragmentFavouriteFilmsBinding? = null
     private val binding get() = _binding!!

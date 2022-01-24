@@ -5,14 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.kinogramm.domain.Film
 import com.example.kinogramm.domain.IFilmsRepository
-import com.example.kinogramm.domain.usecases.GetFilmsUseCase
-import com.example.kinogramm.domain.usecases.RefreshFilmsUseCase
+import com.example.kinogramm.domain.usecases.GetPagingFilmsUseCase
 
 class FilmsCatalogViewModel(repository: IFilmsRepository) : ViewModel() {
-    private val getFilmUseCase = GetFilmsUseCase(repository)
-    private val refreshFilmsUseCase = RefreshFilmsUseCase(repository)
+    //    private val refreshFilmsUseCase = RefreshFilmsUseCase(repository)
+    private val getPagingFilmsUseCase = GetPagingFilmsUseCase(repository)
 
-    val films = getFilmUseCase.getFilmsList()
+    val films = getPagingFilmsUseCase.getFilms()
 
     private var lastClickedFilm: Film? = null
 
@@ -25,7 +24,7 @@ class FilmsCatalogViewModel(repository: IFilmsRepository) : ViewModel() {
         lastClickedFilm = film
     }
 
-    fun refreshFilms() {
-        refreshFilmsUseCase.refreshFilms()
-    }
+//    fun refreshFilms() {
+//        refreshFilmsUseCase.refreshFilms()
+//    }
 }
