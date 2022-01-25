@@ -55,7 +55,7 @@ class FilmsRepositoryImpl(
 
     override fun getFilms(): LiveData<PagingData<Film>> {
         val pagingSourceFactory = {
-            appDatabase.filmsDao().getFilms()
+            appDatabase.filmsDao().getFilmsPagingSource()
         }
 
         return Pager(

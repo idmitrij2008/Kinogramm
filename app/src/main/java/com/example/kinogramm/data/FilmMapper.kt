@@ -5,7 +5,8 @@ import com.example.kinogramm.domain.Film
 
 class FilmMapper {
     fun mapModelToEntity(model: FilmModel) = Film(
-        id = model.id,
+        id = model.filmId,
+        remoteId = model.remoteId,
         title = model.title,
         overview = model.overview,
         posterPath = model.posterPath,
@@ -13,7 +14,8 @@ class FilmMapper {
     )
 
     fun mapEntityToModel(film: Film) = FilmModel(
-        id = film.id,
+        filmId = film.id,
+        remoteId = film.remoteId,
         title = film.title,
         overview = film.overview,
         posterPath = film.posterPath,
@@ -30,7 +32,7 @@ class FilmMapper {
         list.map { mapEntityToUpdDbModel(it) }
 
     private fun mapEntityToUpdDbModel(film: Film) = UpdatedFilmDbModel(
-        id = film.id,
+        filmId = film.id,
         title = film.title,
         overview = film.overview,
         posterPath = film.posterPath

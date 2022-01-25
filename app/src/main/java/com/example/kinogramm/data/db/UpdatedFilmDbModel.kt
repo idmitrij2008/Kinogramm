@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity
 data class UpdatedFilmDbModel(
     @PrimaryKey(autoGenerate = false)
-    val id: Int,
+    val filmId: Int,
     val title: String,
     val overview: String,
     val posterPath: String

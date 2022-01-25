@@ -7,9 +7,10 @@ import com.google.gson.annotations.SerializedName
 
 @Entity(tableName = Constants.FILMS_TABLE)
 data class FilmModel(
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey(autoGenerate = true)
+    val filmId: Int = 0,
     @SerializedName("id")
-    val id: Int,
+    val remoteId: Int,
     @SerializedName("title")
     val title: String,
     @SerializedName("overview")

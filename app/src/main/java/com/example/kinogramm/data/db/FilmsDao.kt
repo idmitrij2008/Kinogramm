@@ -15,15 +15,18 @@ interface FilmsDao {
     suspend fun clearFilms()
 
     @Query("SELECT * FROM films_table")
-    fun getFilms(): PagingSource<Int, FilmModel>
+    fun getFilmsPagingSource(): PagingSource<Int, FilmModel>
 
     @Query("SELECT * FROM films_table")
-    fun getFilmsList(): LiveData<List<FilmModel>>
+    fun getFilmsList(): List<FilmModel>
+
+    @Query("SELECT * FROM films_table")
+    fun getFilmsListLD(): LiveData<List<FilmModel>>
 
     @Update
     fun updateFilm(mapEntityToDbModel: FilmModel)
 
-    @Query("SELECT * FROM films_table WHERE id=:id")
+    @Query("SELECT * FROM films_table WHERE filmId=:id")
     fun getFilm(id: Int): LiveData<FilmModel>
 
     @Update(entity = FilmModel::class)
