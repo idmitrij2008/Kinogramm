@@ -39,20 +39,6 @@ class FilmsRepositoryImpl(
         filmsDao.updateFilm(filmMapper.mapEntityToModel(film).copy(isLiked = !film.isLiked))
     }
 
-    override fun refreshFilms() {
-//        coroutineScope.launch {
-//            Log.d(TAG, "Refreshing films list from network...")
-//            val filmModels = getFilmsFromApi()
-//            if (filmsDao.getCount() == 0) {
-//                filmsDao.insertAll(filmModels)
-//            } else {
-//                val films =
-//                    filmMapper.mapListModelToListEntity(filmModels)
-//                filmsDao.refreshFilms(filmMapper.mapListEntityToUpdDbModel(films))
-//            }
-//        }
-    }
-
     override fun getFilms(): LiveData<PagingData<Film>> {
         val pagingSourceFactory = {
             appDatabase.filmsDao().getFilmsPagingSource()

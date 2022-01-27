@@ -3,15 +3,16 @@ package com.example.kinogramm.view.catalog
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import com.example.kinogramm.domain.Film
 import com.example.kinogramm.domain.IFilmsRepository
 import com.example.kinogramm.domain.usecases.GetPagingFilmsUseCase
 
 class FilmsCatalogViewModel(repository: IFilmsRepository) : ViewModel() {
-    //    private val refreshFilmsUseCase = RefreshFilmsUseCase(repository)
     private val getPagingFilmsUseCase = GetPagingFilmsUseCase(repository)
 
-    val films = getPagingFilmsUseCase.getFilms()
+    val films = getPagingFilmsUseCase.getFilms().cachedIn(viewModelScope)
 
     private var lastClickedFilm: Film? = null
 
@@ -23,8 +24,4 @@ class FilmsCatalogViewModel(repository: IFilmsRepository) : ViewModel() {
         _showDetailsForFilm.value = film
         lastClickedFilm = film
     }
-
-//    fun refreshFilms() {
-//        refreshFilmsUseCase.refreshFilms()
-//    }
 }

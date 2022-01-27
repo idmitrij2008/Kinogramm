@@ -7,7 +7,5 @@ interface IFilmsRepository {
     fun getLikedFilmsLD(): LiveData<List<Film>>
     fun getFilmLD(id: Int): LiveData<Film>
     fun invertIsLikedFor(film: Film)
-    fun refreshFilms()
-
     fun getFilms(): LiveData<PagingData<Film>>
 }
