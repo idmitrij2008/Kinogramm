@@ -17,5 +17,4 @@ data class FilmModel(
     val overview: String,
     @SerializedName("poster_path")
     val posterPath: String,
-    val isLiked: Boolean = false
 )

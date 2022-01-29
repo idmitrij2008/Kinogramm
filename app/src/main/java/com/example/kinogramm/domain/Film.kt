@@ -10,5 +10,4 @@ data class Film(
     val title: String,
     val overview: String,
     val posterPath: String,
-    val isLiked: Boolean = false
 ) : Parcelable

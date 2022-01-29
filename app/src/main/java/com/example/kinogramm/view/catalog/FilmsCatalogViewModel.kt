@@ -12,7 +12,7 @@ import com.example.kinogramm.domain.usecases.GetPagingFilmsUseCase
 class FilmsCatalogViewModel(repository: IFilmsRepository) : ViewModel() {
     private val getPagingFilmsUseCase = GetPagingFilmsUseCase(repository)
 
-    val films = getPagingFilmsUseCase.getFilms().cachedIn(viewModelScope)
+    val films = getPagingFilmsUseCase.getPagedFilms().cachedIn(viewModelScope)
 
     private var lastClickedFilm: Film? = null
 

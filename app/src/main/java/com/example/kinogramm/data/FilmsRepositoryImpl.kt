@@ -9,6 +9,7 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.map
 import androidx.paging.*
 import com.example.kinogramm.data.db.AppDatabase
+import com.example.kinogramm.data.db.LikedFilms
 import com.example.kinogramm.data.network.FilmsApi
 import com.example.kinogramm.domain.Film
 import com.example.kinogramm.domain.IFilmsRepository
@@ -23,23 +24,18 @@ class FilmsRepositoryImpl(
     private val filmsApi: FilmsApi
 ) : IFilmsRepository {
     private val filmsDao = appDatabase.filmsDao()
+    private val likedFilmsDao = appDatabase.likedFilmsDao()
     private val filmMapper = FilmMapper()
 
-    override fun getLikedFilmsLD(): LiveData<List<Film>> =
-        Transformations.map(filmsDao.getLikedFilmsList()) {
-            filmMapper.mapListModelToListEntity(it)
-        }
-
-    override fun getFilmLD(id: Int): LiveData<Film> =
-        Transformations.map(filmsDao.getFilm(id)) {
-            filmMapper.mapModelToEntity(it)
-        }
-
-    override fun invertIsLikedFor(film: Film) {
-        filmsDao.updateFilm(filmMapper.mapEntityToModel(film).copy(isLiked = !film.isLiked))
+    override fun getFilms(): List<Film> {
+        return filmMapper.mapListModelToListEntity(filmsDao.getFilmsList())
     }
 
-    override fun getFilms(): LiveData<PagingData<Film>> {
+    override suspend fun getFilm(id: Int): Film {
+        return filmMapper.mapModelToEntity(filmsDao.getFilm(id))
+    }
+
+    override fun getPagedFilms(): LiveData<PagingData<Film>> {
         val pagingSourceFactory = {
             appDatabase.filmsDao().getFilmsPagingSource()
         }
@@ -58,6 +54,19 @@ class FilmsRepositoryImpl(
             pagingData.map { filmMapper.mapModelToEntity(it) }
         }
     }
+
+    override suspend fun like(remoteId: Int) {
+        likedFilmsDao.insert(LikedFilms(remoteId))
+    }
+
+    override suspend fun unLike(remoteId: Int) {
+        likedFilmsDao.delete(LikedFilms(remoteId))
+    }
+
+    override fun getLikedFilms(): LiveData<List<Int>> =
+        Transformations.map(likedFilmsDao.getAll()) { likedFilms ->
+            likedFilms.map { it.remoteId }
+        }
 
     private val hasInternetConnection: Boolean
         get() {

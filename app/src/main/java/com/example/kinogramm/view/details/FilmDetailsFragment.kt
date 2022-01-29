@@ -14,7 +14,6 @@ import androidx.navigation.fragment.navArgs
 import androidx.paging.ExperimentalPagingApi
 import com.example.kinogramm.R
 import com.example.kinogramm.databinding.FragmentFilmDetailsBinding
-import com.example.kinogramm.domain.Film
 import com.example.kinogramm.util.hideKeyBoard
 
 @ExperimentalPagingApi
@@ -23,9 +22,9 @@ class FilmDetailsFragment : Fragment() {
     private val binding get() = _binding!!
     private val args by navArgs<FilmDetailsFragmentArgs>()
     private lateinit var viewModel: FilmDetailsViewModel
-    private val likeButtonObserver: Observer<Film> by lazy {
-        Observer { film ->
-            val newColor = if (film.isLiked) {
+    private val likeButtonObserver: Observer<Boolean> by lazy {
+        Observer { isLiked ->
+            val newColor = if (isLiked) {
                 R.color.red_heart
             } else R.color.gray_icon_alpha_50
 
@@ -63,7 +62,7 @@ class FilmDetailsFragment : Fragment() {
         binding.mainAppbar?.updateLayoutParams {
             height = 2 * view.resources.displayMetrics.heightPixels / 4
         }
-        viewModel.filmLD.observe(viewLifecycleOwner, likeButtonObserver)
+        viewModel.isLiked.observe(viewLifecycleOwner, likeButtonObserver)
         setCommentEditText()
     }
 

@@ -6,7 +6,7 @@ import com.example.kinogramm.domain.Film
 import com.example.kinogramm.domain.IFilmsRepository
 
 class GetPagingFilmsUseCase(private val repository: IFilmsRepository) {
-    fun getFilms(): LiveData<PagingData<Film>> {
-        return repository.getFilms()
+    fun getPagedFilms(): LiveData<PagingData<Film>> {
+        return repository.getPagedFilms()
     }
 }

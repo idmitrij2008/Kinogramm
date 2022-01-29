@@ -4,8 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.paging.PagingData
 
 interface IFilmsRepository {
-    fun getLikedFilmsLD(): LiveData<List<Film>>
-    fun getFilmLD(id: Int): LiveData<Film>
-    fun invertIsLikedFor(film: Film)
-    fun getFilms(): LiveData<PagingData<Film>>
+    fun getFilms(): List<Film>
+    suspend fun getFilm(id: Int): Film
+    fun getPagedFilms(): LiveData<PagingData<Film>>
+
+    suspend fun like(remoteId: Int)
+    suspend fun unLike(remoteId: Int)
+    fun getLikedFilms(): LiveData<List<Int>>
 }
