@@ -37,4 +37,15 @@ class FilmMapper {
         overview = film.overview,
         posterPath = film.posterPath
     )
+
+    fun mapModelToUpdModel(model: FilmModel) = UpdatedFilmDbModel(
+        filmId = model.filmId,
+        title = model.title,
+        overview = model.overview,
+        posterPath = model.posterPath
+    )
+
+    fun mapListModelsToUpdModels(list: List<FilmModel>): List<UpdatedFilmDbModel> {
+        return list.map { mapModelToUpdModel(it) }
+    }
 }
