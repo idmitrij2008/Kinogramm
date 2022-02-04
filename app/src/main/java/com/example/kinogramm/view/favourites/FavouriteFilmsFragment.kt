@@ -74,7 +74,7 @@ class FavouriteFilmsFragment : Fragment() {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val film = favouriteFilmsAdapter.films[viewHolder.adapterPosition]
+                val film = favouriteFilmsAdapter.films[viewHolder.bindingAdapterPosition]
                 viewModel.removeFromFavourites(film)
                 Toast.makeText(
                     requireContext(),
