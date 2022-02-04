@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "90144546702",
+    "project_id": "kinogramm",
+    "storage_bucket": "kinogramm.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:90144546702:android:547a2e974f9cf8d6a9cedf",
+        "android_client_info": {
+          "package_name": "com.example.kinogramm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "90144546702-v5lt7cp0le3a7nvht5s54ilshqje1hed.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLI3WhuvFGyJ9LPMD6WBZ-UmDC7_Ozel0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "90144546702-v5lt7cp0le3a7nvht5s54ilshqje1hed.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

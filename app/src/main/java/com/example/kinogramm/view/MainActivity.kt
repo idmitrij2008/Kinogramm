@@ -2,6 +2,7 @@ package com.example.kinogramm.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -12,7 +13,11 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.kinogramm.R
 import com.example.kinogramm.databinding.ActivityMainBinding
+import com.example.kinogramm.util.Constants
+import com.example.kinogramm.view.catalog.FilmsCatalogFragmentDirections
 import com.example.kinogramm.view.exit.ExitViewModel
+
+private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -35,6 +40,23 @@ class MainActivity : AppCompatActivity() {
 
         exitViewModel.exit.observe(this) {
             finish()
+        }
+
+        checkIfShouldOpenFilmDetails()
+    }
+
+    private fun checkIfShouldOpenFilmDetails() {
+        val stringId = intent.getStringExtra(Constants.EXTRA_FILM_REMOTE_ID) ?: ""
+        if (stringId.isNotBlank()) {
+            stringId.toIntOrNull()?.let { id ->
+                navHostFragment.navController.navigate(
+                    FilmsCatalogFragmentDirections.actionCatalogFragmentToFilmDetailsFragment(
+                        id
+                    )
+                )
+            } ?: run {
+                Log.w(TAG, "Can't parse stringId.")
+            }
         }
     }
 

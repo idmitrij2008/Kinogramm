@@ -1,6 +1,8 @@
 package com.example.kinogramm.di
 
 import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.paging.ExperimentalPagingApi
 import com.example.kinogramm.data.FilmsRepositoryImpl
 import com.example.kinogramm.data.db.AppDatabase
@@ -61,5 +63,9 @@ object Injection {
         ).apply {
             REPOSITORY_INSTANCE = this
         }
+    }
+
+    fun provideSharedPreferences(application: Application): SharedPreferences {
+        return application.getSharedPreferences(Constants.SHARED_PREFS_NAME, Context.MODE_PRIVATE)
     }
 }

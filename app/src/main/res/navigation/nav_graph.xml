@@ -25,8 +25,8 @@
         android:id="@+id/film_details_fragment"
         android:name="com.example.kinogramm.view.details.FilmDetailsFragment">
         <argument
-            android:name="film"
-            app:argType="com.example.kinogramm.domain.Film" />
+            android:name="filmRemoteId"
+            app:argType="integer" />
     </fragment>
     <dialog
         android:id="@+id/exit_dialog_fragment"

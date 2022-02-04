@@ -1,25 +1,38 @@
 package com.example.kinogramm.view.details
 
 import android.app.Application
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import androidx.lifecycle.*
+import androidx.lifecycle.Observer
 import androidx.paging.ExperimentalPagingApi
 import com.example.kinogramm.di.Injection
 import com.example.kinogramm.domain.Film
+import com.example.kinogramm.domain.usecases.AddScheduledFilmUseCase
 import com.example.kinogramm.domain.usecases.GetFilmUseCase
 import com.example.kinogramm.domain.usecases.GetLikedFilmsUseCase
 import com.example.kinogramm.domain.usecases.LikeFilmUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.*
+
+private const val TAG = "FilmDetailsViewModel"
 
 @ExperimentalPagingApi
-class FilmDetailsViewModel(application: Application, filmId: Int) :
-    AndroidViewModel(application) {
-
+class FilmDetailsViewModel(
+    application: Application,
+    filmRemoteId: Int
+) : ViewModel() {
     private val repository = Injection.provideFilmsRepository(application)
     private val likeFilmUseCase = LikeFilmUseCase(repository)
     private val getLikedFilmsUseCase = GetLikedFilmsUseCase(repository)
     private val getFilmUseCase = GetFilmUseCase(repository)
+    private val addScheduledFilmUseCase: AddScheduledFilmUseCase by lazy {
+        AddScheduledFilmUseCase(
+            repository
+        )
+    }
 
     private val likedFilmsObserver: Observer<List<Int>> by lazy {
         Observer { likedIds ->
@@ -39,9 +52,70 @@ class FilmDetailsViewModel(application: Application, filmId: Int) :
 
     private var likedFilms = getLikedFilmsUseCase.getLikedFilms()
 
+    private var isScheduleDateSet = false
+    private var isScheduleTimeSet = false
+
+    private val _filmAlreadyScheduledNotification = MutableLiveData<Unit>(null)
+    val filmAlreadyScheduledNotification: LiveData<Unit>
+        get() = _filmAlreadyScheduledNotification
+
+    private val _showDatePicker = MutableLiveData<Unit>(null)
+    val showDatePicker: LiveData<Unit>
+        get() = _showDatePicker
+
+    private val _showTimePicker = MutableLiveData<Unit>(null)
+    val showTimePicker: LiveData<Unit>
+        get() = _showTimePicker
+
+    private val _scheduleFilm = MutableLiveData<Unit>(null)
+    val scheduleFilm: LiveData<Unit>
+        get() = _scheduleFilm
+
+    val onDateSetListener: DatePickerDialog.OnDateSetListener by lazy {
+        DatePickerDialog.OnDateSetListener { _, y, m, d ->
+            year = y
+            month = m
+            day = d
+
+            isScheduleDateSet = true
+            _showTimePicker.value = Unit
+        }
+    }
+
+    val onTimeSetListener: TimePickerDialog.OnTimeSetListener by lazy {
+        TimePickerDialog.OnTimeSetListener { _, h, m ->
+            hour = h
+            minute = m
+
+            isScheduleTimeSet = true
+
+            _scheduleFilm.value = Unit
+            viewModelScope.launch(Dispatchers.IO) {
+                film.value?.let { addScheduledFilmUseCase.addScheduledFilm(it.remoteId) }
+            }
+        }
+    }
+
+    private val c: Calendar = Calendar.getInstance()
+    var year = c.get(Calendar.YEAR)
+        private set
+    var month = c.get(Calendar.MONTH)
+        private set
+    var day = c.get(Calendar.DAY_OF_MONTH)
+        private set
+    var hour = c.get(Calendar.HOUR_OF_DAY)
+        private set
+    var minute = c.get(Calendar.MINUTE)
+        private set
+
+    val scheduledTimeMillis: Long
+        get() = Calendar.getInstance().apply {
+            set(year, month, day, hour, minute)
+        }.timeInMillis
+
     init {
         viewModelScope.launch {
-            val film = withContext(Dispatchers.IO) { getFilmUseCase.getFilm(filmId) }
+            val film = withContext(Dispatchers.IO) { getFilmUseCase.getFilm(filmRemoteId) }
             _film.value = film
             likedFilms.observeForever(likedFilmsObserver)
         }
@@ -58,6 +132,16 @@ class FilmDetailsViewModel(application: Application, filmId: Int) :
             } else if (_isLiked.value == false) {
                 _film.value?.let { likeFilmUseCase.likeFilm(it) }
             }
+        }
+    }
+
+    fun scheduleClicked() {
+        if (!isScheduleDateSet) {
+            _showDatePicker.value = Unit
+        } else if (!isScheduleTimeSet) {
+            _showTimePicker.value = Unit
+        } else {
+            _filmAlreadyScheduledNotification.value = Unit
         }
     }
 

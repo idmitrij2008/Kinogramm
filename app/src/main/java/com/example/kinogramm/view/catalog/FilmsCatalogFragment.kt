@@ -66,7 +66,7 @@ class FilmsCatalogFragment : Fragment() {
             mainViewModel.lastClickedFilmId = film.remoteId
             findNavController().navigate(
                 FilmsCatalogFragmentDirections.actionCatalogFragmentToFilmDetailsFragment(
-                    film
+                    film.remoteId
                 )
             )
         }
