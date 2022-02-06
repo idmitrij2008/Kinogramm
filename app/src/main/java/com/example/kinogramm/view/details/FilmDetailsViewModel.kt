@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.paging.ExperimentalPagingApi
 import com.example.kinogramm.di.Injection
 import com.example.kinogramm.domain.Film
+import com.example.kinogramm.domain.usecases.AddScheduledFilmUseCase
 import com.example.kinogramm.domain.usecases.GetFilmUseCase
 import com.example.kinogramm.domain.usecases.GetLikedFilmsUseCase
 import com.example.kinogramm.domain.usecases.LikeFilmUseCase
@@ -27,6 +28,11 @@ class FilmDetailsViewModel(
     private val likeFilmUseCase = LikeFilmUseCase(repository)
     private val getLikedFilmsUseCase = GetLikedFilmsUseCase(repository)
     private val getFilmUseCase = GetFilmUseCase(repository)
+    private val addScheduledFilmUseCase: AddScheduledFilmUseCase by lazy {
+        AddScheduledFilmUseCase(
+            repository
+        )
+    }
 
     private val likedFilmsObserver: Observer<List<Int>> by lazy {
         Observer { likedIds ->
@@ -78,6 +84,10 @@ class FilmDetailsViewModel(
             minute = m
 
             isScheduleTimeSet = true
+
+            viewModelScope.launch(Dispatchers.IO) {
+                film.value?.let { addScheduledFilmUseCase.addScheduledFilm(it.remoteId) }
+            }
         }
     }
 

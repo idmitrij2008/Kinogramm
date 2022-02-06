@@ -11,4 +11,6 @@ interface IFilmsRepository {
     suspend fun like(remoteId: Int)
     suspend fun unLike(remoteId: Int)
     fun getLikedFilms(): LiveData<List<Int>>
+
+    suspend fun addScheduledFilm(remoteId: Int)
 }

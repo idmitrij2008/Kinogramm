@@ -6,6 +6,7 @@ import androidx.lifecycle.map
 import androidx.paging.*
 import com.example.kinogramm.data.db.AppDatabase
 import com.example.kinogramm.data.db.LikedFilms
+import com.example.kinogramm.data.db.ScheduledFilm
 import com.example.kinogramm.data.network.FilmsApi
 import com.example.kinogramm.domain.Film
 import com.example.kinogramm.domain.IFilmsRepository
@@ -20,6 +21,7 @@ class FilmsRepositoryImpl(
 ) : IFilmsRepository {
     private val filmsDao = appDatabase.filmsDao()
     private val likedFilmsDao = appDatabase.likedFilmsDao()
+    private val scheduledFilmsDao = appDatabase.scheduledFilmsDao()
     private val filmMapper = FilmMapper()
 
     override fun getFilms(): List<Film> {
@@ -62,5 +64,9 @@ class FilmsRepositoryImpl(
         Transformations.map(likedFilmsDao.getAll()) { likedFilms ->
             likedFilms.map { it.remoteId }
         }
+
+    override suspend fun addScheduledFilm(remoteId: Int) {
+        scheduledFilmsDao.insert(ScheduledFilm(remoteId))
+    }
 }
 
