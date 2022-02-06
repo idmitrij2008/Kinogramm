@@ -14,7 +14,7 @@ import kotlinx.coroutines.withContext
 
 @ExperimentalPagingApi
 class FilmDetailsViewModel(application: Application, filmId: Int) :
-    AndroidViewModel(application) {
+    ViewModel() {
 
     private val repository = Injection.provideFilmsRepository(application)
     private val likeFilmUseCase = LikeFilmUseCase(repository)
