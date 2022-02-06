@@ -1,9 +1,14 @@
 package com.example.kinogramm.view.details
 
+import android.app.AlarmManager
 import android.app.DatePickerDialog
+import android.app.PendingIntent
 import android.app.TimePickerDialog
+import android.content.Context
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,8 +21,12 @@ import androidx.navigation.fragment.navArgs
 import androidx.paging.ExperimentalPagingApi
 import com.example.kinogramm.R
 import com.example.kinogramm.databinding.FragmentFilmDetailsBinding
+import com.example.kinogramm.domain.ScheduledFilmAlarmReceiver
 import com.example.kinogramm.util.hideKeyBoard
 import com.example.kinogramm.util.showShortToast
+
+private const val TAG = "FilmDetailsFragment"
+
 
 @ExperimentalPagingApi
 class FilmDetailsFragment : Fragment() {
@@ -75,6 +84,14 @@ class FilmDetailsFragment : Fragment() {
         }
     }
 
+    private val scheduleObserver: Observer<Unit> by lazy {
+        Observer { value ->
+            value?.let {
+                schedule()
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(
@@ -108,12 +125,30 @@ class FilmDetailsFragment : Fragment() {
             viewLifecycleOwner,
             filmAlreadyScheduledObserver
         )
+        viewModel.scheduleFilm.observe(viewLifecycleOwner, scheduleObserver)
         setCommentEditText()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun schedule() {
+        Log.d(TAG, "schedule start")
+
+        val alarmManager =
+            requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        val intent = Intent(context, ScheduledFilmAlarmReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, viewModel.scheduledTimeMillis, pendingIntent)
     }
 
     private fun setCommentEditText() {

@@ -67,6 +67,10 @@ class FilmDetailsViewModel(
     val showTimePicker: LiveData<Unit>
         get() = _showTimePicker
 
+    private val _scheduleFilm = MutableLiveData<Unit>(null)
+    val scheduleFilm: LiveData<Unit>
+        get() = _scheduleFilm
+
     val onDateSetListener: DatePickerDialog.OnDateSetListener by lazy {
         DatePickerDialog.OnDateSetListener { _, y, m, d ->
             year = y
@@ -85,6 +89,7 @@ class FilmDetailsViewModel(
 
             isScheduleTimeSet = true
 
+            _scheduleFilm.value = Unit
             viewModelScope.launch(Dispatchers.IO) {
                 film.value?.let { addScheduledFilmUseCase.addScheduledFilm(it.remoteId) }
             }
@@ -102,6 +107,11 @@ class FilmDetailsViewModel(
         private set
     var minute = c.get(Calendar.MINUTE)
         private set
+
+    val scheduledTimeMillis: Long
+        get() = Calendar.getInstance().apply {
+            set(year, month, day, hour, minute)
+        }.timeInMillis
 
     init {
         viewModelScope.launch {
