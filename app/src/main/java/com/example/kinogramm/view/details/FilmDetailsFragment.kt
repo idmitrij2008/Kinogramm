@@ -1,5 +1,7 @@
 package com.example.kinogramm.view.details
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,6 +17,7 @@ import androidx.paging.ExperimentalPagingApi
 import com.example.kinogramm.R
 import com.example.kinogramm.databinding.FragmentFilmDetailsBinding
 import com.example.kinogramm.util.hideKeyBoard
+import com.example.kinogramm.util.showShortToast
 
 @ExperimentalPagingApi
 class FilmDetailsFragment : Fragment() {
@@ -33,6 +36,42 @@ class FilmDetailsFragment : Fragment() {
 
             binding.likeFab?.imageTintList =
                 ColorStateList.valueOf(requireContext().getColor(newColor))
+        }
+    }
+
+    private val filmAlreadyScheduledObserver: Observer<Unit> by lazy {
+        Observer { value ->
+            value?.let {
+                requireContext().showShortToast(getString(R.string.film_already_scheduled))
+            }
+        }
+    }
+
+    private val showDatePickerObserver: Observer<Unit> by lazy {
+        Observer { value ->
+            value?.let {
+                DatePickerDialog(
+                    requireContext(),
+                    viewModel.onDateSetListener,
+                    viewModel.year,
+                    viewModel.month,
+                    viewModel.day
+                ).show()
+            }
+        }
+    }
+
+    private val showTimePickerObserver: Observer<Unit> by lazy {
+        Observer { value ->
+            value?.let {
+                TimePickerDialog(
+                    requireContext(),
+                    viewModel.onTimeSetListener,
+                    viewModel.hour,
+                    viewModel.minute,
+                    true
+                ).show()
+            }
         }
     }
 
@@ -63,6 +102,12 @@ class FilmDetailsFragment : Fragment() {
             height = 2 * view.resources.displayMetrics.heightPixels / 4
         }
         viewModel.isLiked.observe(viewLifecycleOwner, likeButtonObserver)
+        viewModel.showDatePicker.observe(viewLifecycleOwner, showDatePickerObserver)
+        viewModel.showTimePicker.observe(viewLifecycleOwner, showTimePickerObserver)
+        viewModel.filmAlreadyScheduledNotification.observe(
+            viewLifecycleOwner,
+            filmAlreadyScheduledObserver
+        )
         setCommentEditText()
     }
 

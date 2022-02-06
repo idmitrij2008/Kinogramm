@@ -16,4 +16,5 @@
     <string name="load_error">Ошибка загрузки</string>
     <string name="add_to_favourites">Добавить в избранное</string>
     <string name="schedule_reminder">Запланировать просмотр</string>
+    <string name="film_already_scheduled">Фильм уже запланирован к просмотру</string>
 </resources>

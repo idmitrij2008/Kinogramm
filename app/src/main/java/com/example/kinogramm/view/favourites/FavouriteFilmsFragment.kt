@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.paging.ExperimentalPagingApi
@@ -12,6 +11,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kinogramm.databinding.FragmentFavouriteFilmsBinding
+import com.example.kinogramm.util.showShortToast
 
 @ExperimentalPagingApi
 class FavouriteFilmsFragment : Fragment() {
@@ -76,11 +76,7 @@ class FavouriteFilmsFragment : Fragment() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val film = favouriteFilmsAdapter.films[viewHolder.bindingAdapterPosition]
                 viewModel.removeFromFavourites(film)
-                Toast.makeText(
-                    requireContext(),
-                    "Film ${film.title} deleted from favourites.",
-                    Toast.LENGTH_SHORT
-                ).show()
+                requireContext().showShortToast("Film ${film.title} deleted from favourites.")
             }
         }
 
