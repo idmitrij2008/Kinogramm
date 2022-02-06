@@ -1,6 +1,7 @@
 package com.example.kinogramm.view.details
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.*
 import androidx.paging.ExperimentalPagingApi
 import com.example.kinogramm.di.Injection
@@ -8,9 +9,12 @@ import com.example.kinogramm.domain.Film
 import com.example.kinogramm.domain.usecases.GetFilmUseCase
 import com.example.kinogramm.domain.usecases.GetLikedFilmsUseCase
 import com.example.kinogramm.domain.usecases.LikeFilmUseCase
+import com.example.kinogramm.util.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
+private const val TAG = "FilmDetailsViewModel"
 
 @ExperimentalPagingApi
 class FilmDetailsViewModel(application: Application, filmId: Int) :
@@ -20,6 +24,7 @@ class FilmDetailsViewModel(application: Application, filmId: Int) :
     private val likeFilmUseCase = LikeFilmUseCase(repository)
     private val getLikedFilmsUseCase = GetLikedFilmsUseCase(repository)
     private val getFilmUseCase = GetFilmUseCase(repository)
+    private val sharedPrefs = Injection.provideSharedPreferences(application)
 
     private val likedFilmsObserver: Observer<List<Int>> by lazy {
         Observer { likedIds ->
@@ -59,6 +64,10 @@ class FilmDetailsViewModel(application: Application, filmId: Int) :
                 _film.value?.let { likeFilmUseCase.likeFilm(it) }
             }
         }
+    }
+
+    fun scheduleClicked() {
+        Log.d(TAG, "token = ${sharedPrefs.getString(Constants.FIREBASE_MESSAGING_TOKEN_NAME, "")}")
     }
 
     private val _addCommentClicked = MutableLiveData(false)

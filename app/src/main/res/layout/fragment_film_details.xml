@@ -80,6 +80,7 @@
             android:layout_margin="8dp"
             android:backgroundTint="@color/white"
             android:contentDescription="@string/schedule_reminder"
+            android:onClick="@{() -> viewModel.scheduleClicked()}"
             android:src="@drawable/ic_clock"
             app:layout_anchor="@id/main_appbar"
             app:layout_anchorGravity="bottom|start" />
