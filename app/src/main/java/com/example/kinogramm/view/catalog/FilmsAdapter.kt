@@ -1,28 +1,33 @@
 package com.example.kinogramm.view.catalog
 
-import android.content.Context
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.example.kinogramm.R
 import com.example.kinogramm.databinding.FilmListItemBinding
 import com.example.kinogramm.databinding.FilmListItemLandBinding
+import com.example.kinogramm.domain.Film
 
-class FilmsAdapter(private val context: Context) :
-    RecyclerView.Adapter<FilmsAdapter.FilmViewHolder>() {
+class FilmsAdapter(
+    private val viewModel: FilmsCatalogViewModel,
+    private val lastClickedFilmId: Int
+) :
+    PagingDataAdapter<Film, FilmsAdapter.FilmViewHolder>(COMPARATOR) {
 
-    var wrappedFilms = listOf<FilmWrapper>()
-        set(value) {
-            val diffCallback = FilmWrappersDiffCallback(wrappedFilms, value)
-            val diffResult = DiffUtil.calculateDiff(diffCallback)
-            diffResult.dispatchUpdatesTo(this)
-            field = value
+    companion object {
+        private val COMPARATOR = object : DiffUtil.ItemCallback<Film>() {
+            override fun areItemsTheSame(oldItem: Film, newItem: Film): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(oldItem: Film, newItem: Film): Boolean =
+                oldItem == newItem
         }
-
-    var detailsOnClick: ((FilmWrapper) -> Unit)? = null
+    }
 
     class FilmViewHolder(val binding: ViewBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -45,40 +50,27 @@ class FilmsAdapter(private val context: Context) :
     }
 
     override fun onBindViewHolder(holder: FilmViewHolder, position: Int) {
-        val wrappedFilm = wrappedFilms[position]
+        val currentFilm = getItem(position)
 
         if (holder.binding is FilmListItemBinding) {
             holder.binding.run {
-                poster.setImageResource(wrappedFilm.posterResId)
-                poster.contentDescription = wrappedFilm.title
-                title.text = wrappedFilm.title
-                if (wrappedFilm.isLastClicked) title.setTextColor(
-                    context.getColor(
-                        R.color.text_highlighted
-                    )
-                )
-                details.setOnClickListener {
-                    detailsOnClick?.invoke(wrappedFilm)
-                }
+                film = currentFilm
+                viewModel = this@FilmsAdapter.viewModel
+                setTitleTextColor(currentFilm)
             }
         } else if (holder.binding is FilmListItemLandBinding) {
             holder.binding.run {
-                poster.setImageResource(wrappedFilm.posterResId)
-                poster.contentDescription = wrappedFilm.title
-                title.text = wrappedFilm.title
-                if (wrappedFilm.isLastClicked) title.setTextColor(
-                    context.getColor(
-                        R.color.text_highlighted
-                    )
-                )
-                details.setOnClickListener {
-                    detailsOnClick?.invoke(wrappedFilm)
-                }
+                film = currentFilm
+                viewModel = this@FilmsAdapter.viewModel
             }
         }
     }
 
-    override fun getItemCount(): Int {
-        return wrappedFilms.size
+    private fun FilmListItemBinding.setTitleTextColor(currentFilm: Film?) {
+        if (currentFilm?.remoteId == lastClickedFilmId) {
+            title.setTextColor(title.context.getColor(R.color.text_highlighted))
+        } else {
+            title.setTextColor(title.context.getColor(R.color.text))
+        }
     }
 }

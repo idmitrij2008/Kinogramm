@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/catalog_fragment">
+
+    <fragment
+        android:id="@+id/catalog_fragment"
+        android:name="com.example.kinogramm.view.catalog.FilmsCatalogFragment">
+        <action
+            android:id="@+id/action_catalog_fragment_to_filmDetailsFragment"
+            app:destination="@id/film_details_fragment" />
+        <action
+            android:id="@+id/action_catalog_fragment_to_exitDialogFragment"
+            app:destination="@id/exit_dialog_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/favourite_films_fragment"
+        android:name="com.example.kinogramm.view.favourites.FavouriteFilmsFragment">
+        <action
+            android:id="@+id/action_favourite_films_fragment_to_exitDialogFragment"
+            app:destination="@id/exit_dialog_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/film_details_fragment"
+        android:name="com.example.kinogramm.view.details.FilmDetailsFragment">
+        <argument
+            android:name="film"
+            app:argType="com.example.kinogramm.domain.Film" />
+    </fragment>
+    <dialog
+        android:id="@+id/exit_dialog_fragment"
+        android:name="com.example.kinogramm.view.exit.ExitDialogFragment"
+        android:label="ExitDialogFragment" />
+</navigation>
