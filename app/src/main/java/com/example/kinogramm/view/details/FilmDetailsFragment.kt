@@ -23,6 +23,7 @@ import com.example.kinogramm.databinding.FragmentFilmDetailsBinding
 import com.example.kinogramm.domain.ScheduledFilmAlarmReceiver
 import com.example.kinogramm.util.Constants.ACTION_SCHEDULED_FILM
 import com.example.kinogramm.util.Constants.EXTRA_FILM_REMOTE_ID
+import com.example.kinogramm.util.Constants.EXTRA_FILM_TITLE
 import com.example.kinogramm.util.hideKeyBoard
 import com.example.kinogramm.util.showShortToast
 
@@ -142,6 +143,7 @@ class FilmDetailsFragment : Fragment() {
             Intent(context, ScheduledFilmAlarmReceiver::class.java)
                 .setAction(ACTION_SCHEDULED_FILM)
                 .putExtra(EXTRA_FILM_REMOTE_ID, viewModel.film.value?.remoteId ?: "")
+                .putExtra(EXTRA_FILM_TITLE, viewModel.film.value?.title ?: "")
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             0,

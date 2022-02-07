@@ -17,4 +17,6 @@ object Constants {
     const val FIREBASE_MESSAGING_TOKEN_NAME = "messaging_token"
 
     const val ACTION_SCHEDULED_FILM = "com.example.kinogramm.action.SCHEDULED_FILM"
+    const val EXTRA_FILM_REMOTE_ID = "film_remote_id"
+    const val EXTRA_FILM_TITLE = "film_title"
 }
