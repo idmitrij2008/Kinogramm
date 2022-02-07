@@ -22,11 +22,11 @@ import androidx.paging.ExperimentalPagingApi
 import com.example.kinogramm.R
 import com.example.kinogramm.databinding.FragmentFilmDetailsBinding
 import com.example.kinogramm.domain.ScheduledFilmAlarmReceiver
+import com.example.kinogramm.util.Constants.ACTION_SCHEDULED_FILM
 import com.example.kinogramm.util.hideKeyBoard
 import com.example.kinogramm.util.showShortToast
 
 private const val TAG = "FilmDetailsFragment"
-
 
 @ExperimentalPagingApi
 class FilmDetailsFragment : Fragment() {
@@ -140,7 +140,8 @@ class FilmDetailsFragment : Fragment() {
         val alarmManager =
             requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-        val intent = Intent(context, ScheduledFilmAlarmReceiver::class.java)
+        val intent =
+            Intent(context, ScheduledFilmAlarmReceiver::class.java).setAction(ACTION_SCHEDULED_FILM)
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             0,

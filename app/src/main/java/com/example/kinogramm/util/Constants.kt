@@ -15,4 +15,6 @@ object Constants {
 
     const val SHARED_PREFS_NAME = "kinogramm_prefs"
     const val FIREBASE_MESSAGING_TOKEN_NAME = "messaging_token"
+
+    const val ACTION_SCHEDULED_FILM = "com.example.kinogramm.action.SCHEDULED_FILM"
 }

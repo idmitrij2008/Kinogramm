@@ -35,6 +35,14 @@
             </intent-filter>
         </service>
 
+        <receiver
+            android:name=".domain.ScheduledFilmAlarmReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.example.kinogramm.action.SCHEDULED_FILM" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
