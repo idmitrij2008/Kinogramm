@@ -8,7 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +22,7 @@ import com.example.kinogramm.R
 import com.example.kinogramm.databinding.FragmentFilmDetailsBinding
 import com.example.kinogramm.domain.ScheduledFilmAlarmReceiver
 import com.example.kinogramm.util.Constants.ACTION_SCHEDULED_FILM
+import com.example.kinogramm.util.Constants.EXTRA_FILM_REMOTE_ID
 import com.example.kinogramm.util.hideKeyBoard
 import com.example.kinogramm.util.showShortToast
 
@@ -96,7 +96,7 @@ class FilmDetailsFragment : Fragment() {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(
             this,
-            FilmDetailsViewModelFactory(requireActivity().application, args.film.id)
+            FilmDetailsViewModelFactory(requireActivity().application, args.filmId)
         ).get(
             FilmDetailsViewModel::class.java
         )
@@ -135,13 +135,13 @@ class FilmDetailsFragment : Fragment() {
     }
 
     private fun schedule() {
-        Log.d(TAG, "schedule start")
-
         val alarmManager =
             requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         val intent =
-            Intent(context, ScheduledFilmAlarmReceiver::class.java).setAction(ACTION_SCHEDULED_FILM)
+            Intent(context, ScheduledFilmAlarmReceiver::class.java)
+                .setAction(ACTION_SCHEDULED_FILM)
+                .putExtra(EXTRA_FILM_REMOTE_ID, viewModel.film.value?.remoteId ?: "")
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             0,
