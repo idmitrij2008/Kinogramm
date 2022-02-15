@@ -1,4 +1,4 @@
-package com.example.kinogramm.data
+package com.example.kinogramm.data.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

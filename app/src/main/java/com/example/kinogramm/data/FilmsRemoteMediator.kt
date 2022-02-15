@@ -8,6 +8,7 @@ import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.example.kinogramm.data.db.AppDatabase
 import com.example.kinogramm.data.db.RemoteKeys
+import com.example.kinogramm.data.models.FilmModel
 import com.example.kinogramm.data.network.FilmsApi
 import com.example.kinogramm.util.Constants
 import retrofit2.HttpException

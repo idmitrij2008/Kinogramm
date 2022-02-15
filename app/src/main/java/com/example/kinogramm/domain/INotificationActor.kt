@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.paging.ExperimentalPagingApi
 import com.example.kinogramm.R
 import com.example.kinogramm.util.Constants
 import com.example.kinogramm.view.MainActivity
@@ -16,6 +17,7 @@ private const val NOTIFICATION_ID = 101
 private const val CHANNEL_ID = "kinogramm_channel"
 private const val CHANNEL_DESCRIPTION = "kinogramm_notification_channel"
 
+@ExperimentalPagingApi
 interface INotificationActor {
 
     fun doNotify(context: Context, params: Map<String, String>) {

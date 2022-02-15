@@ -1,8 +1,10 @@
-package com.example.kinogramm.data
+package com.example.kinogramm.data.mapping
 
+import com.example.kinogramm.data.models.FilmModel
 import com.example.kinogramm.domain.Film
+import javax.inject.Inject
 
-class FilmMapper {
+class FilmMapper @Inject constructor() {
     fun mapModelToEntity(model: FilmModel) = Film(
         id = model.filmId,
         remoteId = model.remoteId,

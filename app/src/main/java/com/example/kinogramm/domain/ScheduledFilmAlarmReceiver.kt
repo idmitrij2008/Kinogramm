@@ -4,10 +4,12 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import androidx.paging.ExperimentalPagingApi
 import com.example.kinogramm.util.Constants
 
 private const val TAG = "ScheduledFilmAlarmReceiver"
 
+@ExperimentalPagingApi
 class ScheduledFilmAlarmReceiver : BroadcastReceiver(), INotificationActor {
 
     override fun onReceive(context: Context?, intent: Intent?) {

@@ -51,7 +51,7 @@ dependencies {
     implementation 'androidx.fragment:fragment-ktx:1.4.1'
 
     // Navigation
-    def nav_version = '2.4.0'
+    def nav_version = '2.4.1'
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
@@ -79,7 +79,7 @@ dependencies {
     implementation("androidx.room:room-paging:2.4.1")
 
     // LiveData
-    def lifecycle_version = "2.4.0"
+    def lifecycle_version = "2.4.1"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
 
     // Paging
@@ -92,6 +92,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-perf-ktx'
     implementation 'com.google.firebase:firebase-messaging-ktx'
+
+    // Dagger
+    implementation 'com.google.dagger:dagger:2.40'
+    kapt 'com.google.dagger:dagger-compiler:2.40'
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

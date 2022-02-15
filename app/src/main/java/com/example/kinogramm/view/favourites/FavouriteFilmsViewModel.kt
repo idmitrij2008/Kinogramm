@@ -2,18 +2,18 @@ package com.example.kinogramm.view.favourites
 
 import androidx.lifecycle.*
 import com.example.kinogramm.domain.Film
-import com.example.kinogramm.domain.IFilmsRepository
 import com.example.kinogramm.domain.usecases.GetFilmsUseCase
 import com.example.kinogramm.domain.usecases.GetLikedFilmsUseCase
 import com.example.kinogramm.domain.usecases.LikeFilmUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class FavouriteFilmsViewModel(repository: IFilmsRepository) : ViewModel() {
-    private val getLikedFilmsUseCase = GetLikedFilmsUseCase(repository)
-    private val getFilmsUseCase = GetFilmsUseCase(repository)
-    private val likeFilmUseCase = LikeFilmUseCase(repository)
-
+class FavouriteFilmsViewModel @Inject constructor(
+    private val getLikedFilmsUseCase: GetLikedFilmsUseCase,
+    private val getFilmsUseCase: GetFilmsUseCase,
+    private val likeFilmUseCase: LikeFilmUseCase,
+) : ViewModel() {
     private val favouriteFilmIds: LiveData<List<Int>> = getLikedFilmsUseCase.getLikedFilms()
 
     private val favIdsObserver: Observer<List<Int>> by lazy {

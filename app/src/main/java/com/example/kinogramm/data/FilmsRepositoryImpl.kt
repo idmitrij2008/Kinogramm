@@ -4,25 +4,25 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.map
 import androidx.paging.*
-import com.example.kinogramm.data.db.AppDatabase
-import com.example.kinogramm.data.db.LikedFilms
-import com.example.kinogramm.data.db.ScheduledFilm
+import com.example.kinogramm.data.db.*
+import com.example.kinogramm.data.mapping.FilmMapper
 import com.example.kinogramm.data.network.FilmsApi
 import com.example.kinogramm.domain.Film
 import com.example.kinogramm.domain.IFilmsRepository
+import javax.inject.Inject
 
 private const val TAG = "FilmsRepository"
 private const val NETWORK_PAGE_SIZE = 30
 
 @ExperimentalPagingApi
-class FilmsRepositoryImpl(
+class FilmsRepositoryImpl @Inject constructor(
     private val appDatabase: AppDatabase,
-    private val filmsApi: FilmsApi
+    private val filmsApi: FilmsApi,
+    private val filmsDao: FilmsDao,
+    private val likedFilmsDao: LikedFilmsDao,
+    private val scheduledFilmsDao: ScheduledFilmsDao,
+    private val filmMapper: FilmMapper
 ) : IFilmsRepository {
-    private val filmsDao = appDatabase.filmsDao()
-    private val likedFilmsDao = appDatabase.likedFilmsDao()
-    private val scheduledFilmsDao = appDatabase.scheduledFilmsDao()
-    private val filmMapper = FilmMapper()
 
     override fun getFilms(): List<Film> {
         return filmMapper.mapListModelToListEntity(filmsDao.getFilmsList())
@@ -34,7 +34,7 @@ class FilmsRepositoryImpl(
 
     override fun getPagedFilms(): LiveData<PagingData<Film>> {
         val pagingSourceFactory = {
-            appDatabase.filmsDao().getFilmsPagingSource()
+            filmsDao.getFilmsPagingSource()
         }
 
         return Pager(

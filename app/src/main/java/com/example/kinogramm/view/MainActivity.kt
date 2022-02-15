@@ -6,26 +6,42 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import androidx.paging.ExperimentalPagingApi
 import com.example.kinogramm.R
 import com.example.kinogramm.databinding.ActivityMainBinding
 import com.example.kinogramm.util.Constants
 import com.example.kinogramm.view.catalog.FilmsCatalogFragmentDirections
 import com.example.kinogramm.view.exit.ExitViewModel
+import javax.inject.Inject
 
 private const val TAG = "MainActivity"
 
+@ExperimentalPagingApi
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navHostFragment: NavHostFragment
     private var destinationListener: NavController.OnDestinationChangedListener? = null
-    private val exitViewModel: ExitViewModel by viewModels()
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val exitViewModel: ExitViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[ExitViewModel::class.java]
+    }
+
+    private val component by lazy {
+        (application as KinogrammApp).component
+            .activityComponentFactory()
+            .create()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        component.inject(this)
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
