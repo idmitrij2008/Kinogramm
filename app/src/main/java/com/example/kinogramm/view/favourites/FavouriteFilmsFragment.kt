@@ -1,5 +1,6 @@
 package com.example.kinogramm.view.favourites
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,22 +13,34 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kinogramm.databinding.FragmentFavouriteFilmsBinding
 import com.example.kinogramm.util.showShortToast
+import com.example.kinogramm.view.KinogrammApp
+import com.example.kinogramm.view.ViewModelFactory
+import javax.inject.Inject
 
 @ExperimentalPagingApi
 class FavouriteFilmsFragment : Fragment() {
     private var _binding: FragmentFavouriteFilmsBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModel: FavouriteFilmsViewModel
     private lateinit var favouriteFilmsAdapter: FavouriteFilmsAdapter
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModel: FavouriteFilmsViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[FavouriteFilmsViewModel::class.java]
+    }
+
+    private val component by lazy {
+        (requireActivity().application as KinogrammApp).component
+    }
+
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(
-            this,
-            FavouriteFilmsViewModelFactory(requireActivity().application)
-        ).get(
-            FavouriteFilmsViewModel::class.java
-        )
     }
 
     override fun onCreateView(

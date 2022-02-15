@@ -6,12 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.example.kinogramm.domain.Film
-import com.example.kinogramm.domain.IFilmsRepository
 import com.example.kinogramm.domain.usecases.GetPagingFilmsUseCase
+import javax.inject.Inject
 
-class FilmsCatalogViewModel(repository: IFilmsRepository) : ViewModel() {
-    private val getPagingFilmsUseCase = GetPagingFilmsUseCase(repository)
-
+class FilmsCatalogViewModel @Inject constructor(
+    private val getPagingFilmsUseCase: GetPagingFilmsUseCase
+) : ViewModel() {
     val films = getPagingFilmsUseCase.getPagedFilms().cachedIn(viewModelScope)
 
     private var lastClickedFilm: Film? = null

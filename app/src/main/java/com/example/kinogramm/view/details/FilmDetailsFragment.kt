@@ -26,6 +26,9 @@ import com.example.kinogramm.util.Constants.EXTRA_FILM_REMOTE_ID
 import com.example.kinogramm.util.Constants.EXTRA_FILM_TITLE
 import com.example.kinogramm.util.hideKeyBoard
 import com.example.kinogramm.util.showShortToast
+import com.example.kinogramm.view.KinogrammApp
+import com.example.kinogramm.view.ViewModelFactory
+import javax.inject.Inject
 
 private const val TAG = "FilmDetailsFragment"
 
@@ -34,7 +37,6 @@ class FilmDetailsFragment : Fragment() {
     private var _binding: FragmentFilmDetailsBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<FilmDetailsFragmentArgs>()
-    private lateinit var viewModel: FilmDetailsViewModel
     private val likeButtonObserver: Observer<Boolean> by lazy {
         Observer { isLiked ->
             val newColor = if (isLiked) {
@@ -47,6 +49,20 @@ class FilmDetailsFragment : Fragment() {
             binding.likeFab?.imageTintList =
                 ColorStateList.valueOf(requireContext().getColor(newColor))
         }
+    }
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModel: FilmDetailsViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[FilmDetailsViewModel::class.java]
+    }
+
+    private val component by lazy {
+        (requireActivity().application as KinogrammApp)
+            .component
+            .filmDetailsComponentFactory()
+            .create(args.filmRemoteId)
     }
 
     private val filmAlreadyScheduledObserver: Observer<Unit> by lazy {
@@ -93,14 +109,9 @@ class FilmDetailsFragment : Fragment() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(
-            this,
-            FilmDetailsViewModelFactory(requireActivity().application, args.filmRemoteId)
-        ).get(
-            FilmDetailsViewModel::class.java
-        )
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
     }
 
     override fun onCreateView(

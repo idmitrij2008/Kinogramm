@@ -1,5 +1,6 @@
 package com.example.kinogramm.view.catalog
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,11 +15,14 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import com.example.kinogramm.R
 import com.example.kinogramm.databinding.FragmentFilmsCatalogBinding
+import com.example.kinogramm.view.KinogrammApp
 import com.example.kinogramm.view.MainViewModel
+import com.example.kinogramm.view.ViewModelFactory
 import com.example.kinogramm.view.main.FilmsCatalogItemDecorator
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 private val TAG = "FilmsCatalogFragment"
 
@@ -26,19 +30,27 @@ private val TAG = "FilmsCatalogFragment"
 class FilmsCatalogFragment : Fragment() {
     private var _binding: FragmentFilmsCatalogBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModel: FilmsCatalogViewModel
     private val mainViewModel: MainViewModel by activityViewModels()
     private var filmsAdapter: FilmsAdapter? = null
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModel: FilmsCatalogViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[FilmsCatalogViewModel::class.java]
+    }
+
+    private val component by lazy {
+        (requireActivity().application as KinogrammApp).component
+    }
+
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(
-            this,
-            FilmCatalogViewModelFactory(requireActivity().application)
-        ).get(
-            FilmsCatalogViewModel::class.java
-        )
-
         observeShouldShowDetails()
         observeLoadState()
     }

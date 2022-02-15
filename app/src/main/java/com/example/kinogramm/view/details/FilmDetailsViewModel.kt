@@ -1,12 +1,11 @@
 package com.example.kinogramm.view.details
 
-import android.app.Application
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import androidx.paging.ExperimentalPagingApi
-import com.example.kinogramm.di.Injection
+import com.example.kinogramm.di.FilmRemoteIdQualifier
 import com.example.kinogramm.domain.Film
 import com.example.kinogramm.domain.usecases.AddScheduledFilmUseCase
 import com.example.kinogramm.domain.usecases.GetFilmUseCase
@@ -16,24 +15,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
+import javax.inject.Inject
 
 private const val TAG = "FilmDetailsViewModel"
 
 @ExperimentalPagingApi
-class FilmDetailsViewModel(
-    application: Application,
-    filmRemoteId: Int
+class FilmDetailsViewModel @Inject constructor(
+    private val likeFilmUseCase: LikeFilmUseCase,
+    private val getLikedFilmsUseCase: GetLikedFilmsUseCase,
+    private val getFilmUseCase: GetFilmUseCase,
+    private val addScheduledFilmUseCase: AddScheduledFilmUseCase,
+    @FilmRemoteIdQualifier private val filmRemoteId: Int
 ) : ViewModel() {
-    private val repository = Injection.provideFilmsRepository(application)
-    private val likeFilmUseCase = LikeFilmUseCase(repository)
-    private val getLikedFilmsUseCase = GetLikedFilmsUseCase(repository)
-    private val getFilmUseCase = GetFilmUseCase(repository)
-    private val addScheduledFilmUseCase: AddScheduledFilmUseCase by lazy {
-        AddScheduledFilmUseCase(
-            repository
-        )
-    }
-
     private val likedFilmsObserver: Observer<List<Int>> by lazy {
         Observer { likedIds ->
             _film.value?.let { f ->
