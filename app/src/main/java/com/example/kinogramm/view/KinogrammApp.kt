@@ -2,7 +2,7 @@ package com.example.kinogramm.view
 
 import android.app.Application
 import androidx.paging.ExperimentalPagingApi
-import com.example.kinogramm.di.ApplicationComponent
+import com.example.kinogramm.di.components.ApplicationComponent
 import com.example.kinogramm.di.DaggerApplicationComponent
 
 @ExperimentalPagingApi

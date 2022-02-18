@@ -1,4 +1,4 @@
-package com.example.kinogramm.di
+package com.example.kinogramm.di.scopes
 
 import javax.inject.Scope
 

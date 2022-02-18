@@ -1,4 +1,4 @@
-package com.example.kinogramm.di
+package com.example.kinogramm.di.modules
 
 import android.app.Application
 import androidx.paging.ExperimentalPagingApi
@@ -8,6 +8,9 @@ import com.example.kinogramm.data.db.FilmsDao
 import com.example.kinogramm.data.db.LikedFilmsDao
 import com.example.kinogramm.data.db.ScheduledFilmsDao
 import com.example.kinogramm.data.network.FilmsApi
+import com.example.kinogramm.di.components.ActivityComponent
+import com.example.kinogramm.di.components.FilmsCatalogComponent
+import com.example.kinogramm.di.scopes.ApplicationScope
 import com.example.kinogramm.domain.IFilmsRepository
 import com.example.kinogramm.util.Constants
 import dagger.Binds
@@ -19,7 +22,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 @ExperimentalPagingApi
-@Module
+@Module(
+    subcomponents = [
+        ActivityComponent::class,
+        FilmsCatalogComponent::class
+    ]
+)
 interface DataModule {
 
     @Binds

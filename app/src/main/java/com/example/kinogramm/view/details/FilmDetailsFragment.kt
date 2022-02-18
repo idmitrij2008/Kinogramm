@@ -61,7 +61,7 @@ class FilmDetailsFragment : Fragment() {
     private val component by lazy {
         (requireActivity().application as KinogrammApp)
             .component
-            .filmDetailsComponentFactory()
+            .activityComponentFactory()
             .create(args.filmRemoteId)
     }
 
