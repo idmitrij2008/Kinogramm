@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
     private val component by lazy {
         (application as KinogrammApp).component
             .activityComponentFactory()
-            .create(filmRemoteId = 0)
+            .create()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

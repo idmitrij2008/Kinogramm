@@ -24,7 +24,9 @@ class ExitDialogFragment : DialogFragment() {
     private val component by lazy {
         (requireActivity().application as KinogrammApp).component
             .activityComponentFactory()
-            .create(0)
+            .create()
+            .exitComponentFactory()
+            .create()
     }
 
     override fun onAttach(context: Context) {

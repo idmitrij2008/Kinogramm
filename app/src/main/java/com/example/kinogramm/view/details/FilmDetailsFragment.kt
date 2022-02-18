@@ -62,6 +62,8 @@ class FilmDetailsFragment : Fragment() {
         (requireActivity().application as KinogrammApp)
             .component
             .activityComponentFactory()
+            .create()
+            .filmDetailsComponentFactory()
             .create(args.filmRemoteId)
     }
 

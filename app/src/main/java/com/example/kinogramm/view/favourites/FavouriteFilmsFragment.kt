@@ -33,7 +33,9 @@ class FavouriteFilmsFragment : Fragment() {
     private val component by lazy {
         (requireActivity().application as KinogrammApp).component
             .activityComponentFactory()
-            .create(0)
+            .create()
+            .favouriteFilmsComponentFactory()
+            .create()
     }
 
     override fun onAttach(context: Context) {

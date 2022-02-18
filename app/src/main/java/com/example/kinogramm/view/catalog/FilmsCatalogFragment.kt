@@ -43,7 +43,9 @@ class FilmsCatalogFragment : Fragment() {
     private val component by lazy {
         (requireActivity().application as KinogrammApp).component
             .activityComponentFactory()
-            .create(0)
+            .create()
+            .filmCatalogComponentFactory()
+            .create()
     }
 
     override fun onAttach(context: Context) {

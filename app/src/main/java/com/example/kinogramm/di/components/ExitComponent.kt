@@ -1,11 +1,10 @@
 package com.example.kinogramm.di.components
 
 import androidx.paging.ExperimentalPagingApi
-import com.example.kinogramm.di.modules.ExitModule
 import com.example.kinogramm.view.exit.ExitDialogFragment
 import dagger.Subcomponent
 
-@Subcomponent(modules = [ExitModule::class])
+@Subcomponent
 @ExperimentalPagingApi
 interface ExitComponent {
 

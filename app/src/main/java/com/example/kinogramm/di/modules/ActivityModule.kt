@@ -8,6 +8,7 @@ import com.example.kinogramm.di.components.FavouriteFilmsComponent
 import com.example.kinogramm.di.components.FilmDetailsComponent
 import com.example.kinogramm.di.components.FilmsCatalogComponent
 import com.example.kinogramm.view.MainViewModel
+import com.example.kinogramm.view.exit.ExitViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -28,4 +29,9 @@ interface ActivityModule {
     @IntoMap
     @ViewModelKey(MainViewModel::class)
     fun bindMainViewModel(viewModel: MainViewModel): ViewModel
+
+    @Binds
+    @dagger.multibindings.IntoMap
+    @ViewModelKey(ExitViewModel::class)
+    fun bindExitViewModel(viewModel: ExitViewModel): ViewModel
 }
