@@ -76,7 +76,9 @@ dependencies {
     kapt "androidx.room:room-compiler:$roomVersion"
     implementation "androidx.room:room-ktx:$roomVersion"
     // optional - Paging 3 Integration
-    implementation("androidx.room:room-paging:2.4.1")
+    implementation "androidx.room:room-paging:2.4.1"
+    // RxJava3 Integration
+    implementation "androidx.room:room-rxjava3:$roomVersion"
 
     // LiveData
     def lifecycle_version = "2.4.1"
@@ -85,6 +87,7 @@ dependencies {
     // Paging
     def paging_version = "3.1.0"
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
+    implementation "androidx.paging:paging-rxjava3:$paging_version"
 
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:29.0.4')
@@ -96,6 +99,10 @@ dependencies {
     // Dagger
     implementation 'com.google.dagger:dagger:2.40'
     kapt 'com.google.dagger:dagger-compiler:2.40'
+
+    // RxJava
+    implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

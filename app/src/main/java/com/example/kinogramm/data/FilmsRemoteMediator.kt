@@ -66,9 +66,20 @@ class FilmsRemoteMediator(
                 if (loadType == LoadType.REFRESH) {
                     appDatabase.remoteKeysDao().clearRemoteKeys()
                     appDatabase.filmsDao().clearFilms()
+                        .subscribe({ countDeleted ->
+                            Log.d(TAG, "$countDeleted items deleted.")
+                        }, { e ->
+                            Log.e(TAG, "Deletion Error: ${e.message}")
+                        })
                 }
 
                 appDatabase.filmsDao().insertAll(newFilms)
+                    .subscribe({ rowIds ->
+                        Log.d(TAG, "${rowIds.size} items inserted.")
+                    }, { e ->
+                        Log.e(TAG, "Insertion Error: ${e.message}")
+                    })
+
                 insertRemoteKeys(newFilms, page, endOfPaginationReached)
             }
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
@@ -84,17 +95,21 @@ class FilmsRemoteMediator(
         page: Int,
         endOfPaginationReached: Boolean
     ) {
-        val newRemoteIds = newFilms.map { it.remoteId }
-        val justInsertedFilms = appDatabase.filmsDao().getFilmsList()
-            .filter { it.remoteId in newRemoteIds }
-
         val prevKey = if (page == STARTING_PAGE_INDEX) null else page - 1
         val nextKey = if (endOfPaginationReached) null else page + 1
 
-        val keys = justInsertedFilms.map {
-            RemoteKeys(filmId = it.filmId, prevKey = prevKey, nextKey = nextKey)
-        }
-        appDatabase.remoteKeysDao().insertAll(keys)
+        val newRemoteIds = newFilms.map { it.remoteId }
+        appDatabase.filmsDao().getFilmsList()
+            .map { films ->
+                films
+                    .filter { it.remoteId in newRemoteIds }
+                    .map { RemoteKeys(filmId = it.filmId, prevKey = prevKey, nextKey = nextKey) }
+            }
+            .subscribe({ keys ->
+                appDatabase.remoteKeysDao().insertAll(keys)
+            }, { e ->
+                Log.e(TAG, "${e.message}")
+            })
     }
 
     private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, FilmModel>): RemoteKeys? {

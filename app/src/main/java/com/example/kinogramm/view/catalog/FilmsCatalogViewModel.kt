@@ -4,11 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.cachedIn
+import androidx.paging.rxjava3.cachedIn
 import com.example.kinogramm.domain.Film
 import com.example.kinogramm.domain.usecases.GetPagingFilmsUseCase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class FilmsCatalogViewModel @Inject constructor(
     private val getPagingFilmsUseCase: GetPagingFilmsUseCase
 ) : ViewModel() {

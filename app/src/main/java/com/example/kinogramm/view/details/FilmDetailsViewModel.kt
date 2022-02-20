@@ -2,8 +2,10 @@ package com.example.kinogramm.view.details
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import androidx.lifecycle.*
-import androidx.lifecycle.Observer
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.paging.ExperimentalPagingApi
 import com.example.kinogramm.di.FilmRemoteIdQualifier
 import com.example.kinogramm.domain.Film
@@ -11,9 +13,8 @@ import com.example.kinogramm.domain.usecases.AddScheduledFilmUseCase
 import com.example.kinogramm.domain.usecases.GetFilmUseCase
 import com.example.kinogramm.domain.usecases.GetLikedFilmsUseCase
 import com.example.kinogramm.domain.usecases.LikeFilmUseCase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.*
 import javax.inject.Inject
 
@@ -22,19 +23,11 @@ private const val TAG = "FilmDetailsViewModel"
 @ExperimentalPagingApi
 class FilmDetailsViewModel @Inject constructor(
     private val likeFilmUseCase: LikeFilmUseCase,
-    private val getLikedFilmsUseCase: GetLikedFilmsUseCase,
-    private val getFilmUseCase: GetFilmUseCase,
+    getLikedFilmsUseCase: GetLikedFilmsUseCase,
+    getFilmUseCase: GetFilmUseCase,
     private val addScheduledFilmUseCase: AddScheduledFilmUseCase,
     @FilmRemoteIdQualifier private val filmRemoteId: Int
 ) : ViewModel() {
-    private val likedFilmsObserver: Observer<List<Int>> by lazy {
-        Observer { likedIds ->
-            _film.value?.let { f ->
-                _isLiked.value = f.remoteId in likedIds
-            }
-        }
-    }
-
     private val _film = MutableLiveData<Film>()
     val film: LiveData<Film>
         get() = _film
@@ -83,8 +76,10 @@ class FilmDetailsViewModel @Inject constructor(
             isScheduleTimeSet = true
 
             _scheduleFilm.value = Unit
-            viewModelScope.launch(Dispatchers.IO) {
-                film.value?.let { addScheduledFilmUseCase.addScheduledFilm(it.remoteId) }
+
+            film.value?.let { f ->
+                Log.d(TAG, "Scheduling film with remoteId: ${f.remoteId}")
+                addScheduledFilmUseCase.addScheduledFilm(f.remoteId)
             }
         }
     }
@@ -107,23 +102,36 @@ class FilmDetailsViewModel @Inject constructor(
         }.timeInMillis
 
     init {
-        viewModelScope.launch {
-            val film = withContext(Dispatchers.IO) { getFilmUseCase.getFilm(filmRemoteId) }
-            _film.value = film
-            likedFilms.observeForever(likedFilmsObserver)
-        }
+        getFilmUseCase.getFilm(filmRemoteId)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ film ->
+                _film.value = film
+                observeLikedFilms()
+            }, { e ->
+                Log.e(TAG, "${e.message}")
+            })
     }
 
-    override fun onCleared() {
-        likedFilms.removeObserver(likedFilmsObserver)
+    private fun observeLikedFilms() {
+        likedFilms
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { likedIds ->
+                _film.value?.let { f ->
+                    _isLiked.value = f.remoteId in likedIds
+                }
+            }
     }
 
     fun likeClicked() {
-        viewModelScope.launch(Dispatchers.IO) {
-            if (_isLiked.value == true) {
-                _film.value?.let { likeFilmUseCase.unLikeFilm(it) }
-            } else if (_isLiked.value == false) {
-                _film.value?.let { likeFilmUseCase.likeFilm(it) }
+        if (_isLiked.value == true) {
+            _film.value?.let { f ->
+                likeFilmUseCase.unLikeFilm(f)
+            }
+        } else if (_isLiked.value == false) {
+            _film.value?.let { f ->
+                likeFilmUseCase.likeFilm(f)
             }
         }
     }

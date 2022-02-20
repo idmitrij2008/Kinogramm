@@ -1,22 +1,20 @@
 package com.example.kinogramm.data.db
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 
 @Dao
 interface LikedFilmsDao {
     @Insert
-    suspend fun insert(film: LikedFilms)
+    fun insert(film: LikedFilm): Single<Long>
 
     @Delete
-    suspend fun delete(film: LikedFilms)
+    fun delete(film: LikedFilm): Single<Int>
 
     @Query("SELECT * FROM liked_films_table")
-    fun getAll(): LiveData<List<LikedFilms>>
-
-    @Query("DELETE FROM liked_films_table")
-    suspend fun clear()
+    fun getAll(): Observable<List<LikedFilm>>
 }

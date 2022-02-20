@@ -20,12 +20,14 @@ import com.example.kinogramm.view.MainViewModel
 import com.example.kinogramm.view.ViewModelFactory
 import com.example.kinogramm.view.main.FilmsCatalogItemDecorator
 import com.google.android.material.snackbar.Snackbar
+import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private val TAG = "FilmsCatalogFragment"
 
+@ExperimentalCoroutinesApi
 @ExperimentalPagingApi
 class FilmsCatalogFragment : Fragment() {
     private var _binding: FragmentFilmsCatalogBinding? = null
@@ -89,11 +91,11 @@ class FilmsCatalogFragment : Fragment() {
     }
 
     private fun observeNewFilmsData() {
-        viewModel.films.observe(viewLifecycleOwner) { pagingData ->
-            lifecycleScope.launch {
-                filmsAdapter?.submitData(pagingData)
+        viewModel.films
+            .subscribeOn(Schedulers.io())
+            .subscribe { pagingData ->
+                filmsAdapter?.submitData(lifecycle, pagingData)
             }
-        }
     }
 
     private fun observeLoadState() {

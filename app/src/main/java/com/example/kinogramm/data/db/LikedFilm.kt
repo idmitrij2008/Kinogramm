@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import com.example.kinogramm.util.Constants
 
 @Entity(tableName = Constants.LIKED_FILMS_TABLE)
-data class LikedFilms(
+data class LikedFilm(
     @PrimaryKey(autoGenerate = false)
     val remoteId: Int
 )

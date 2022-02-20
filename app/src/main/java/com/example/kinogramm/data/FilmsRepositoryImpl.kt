@@ -1,14 +1,15 @@
 package com.example.kinogramm.data
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.map
 import androidx.paging.*
+import androidx.paging.rxjava3.flowable
 import com.example.kinogramm.data.db.*
 import com.example.kinogramm.data.mapping.FilmMapper
 import com.example.kinogramm.data.network.FilmsApi
 import com.example.kinogramm.domain.Film
 import com.example.kinogramm.domain.IFilmsRepository
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
 private const val TAG = "FilmsRepository"
@@ -24,15 +25,19 @@ class FilmsRepositoryImpl @Inject constructor(
     private val filmMapper: FilmMapper
 ) : IFilmsRepository {
 
-    override fun getFilms(): List<Film> {
-        return filmMapper.mapListModelToListEntity(filmsDao.getFilmsList())
+    override fun getFilms(): Single<List<Film>> {
+        return filmsDao.getFilmsList().map {
+            filmMapper.mapListModelToListEntity(it)
+        }
     }
 
-    override suspend fun getFilm(remoteId: Int): Film {
-        return filmMapper.mapModelToEntity(filmsDao.getFilm(remoteId))
+    override fun getFilm(remoteId: Int): Single<Film> {
+        return filmsDao.getFilm(remoteId).map { model ->
+            filmMapper.mapModelToEntity(model)
+        }
     }
 
-    override fun getPagedFilms(): LiveData<PagingData<Film>> {
+    override fun getPagedFilms(): Flowable<PagingData<Film>> {
         val pagingSourceFactory = {
             filmsDao.getFilmsPagingSource()
         }
@@ -47,26 +52,26 @@ class FilmsRepositoryImpl @Inject constructor(
                 apiService = filmsApi
             ),
             pagingSourceFactory = pagingSourceFactory
-        ).liveData.map { pagingData ->
+        ).flowable.map { pagingData ->
             pagingData.map { filmMapper.mapModelToEntity(it) }
         }
     }
 
-    override suspend fun like(remoteId: Int) {
-        likedFilmsDao.insert(LikedFilms(remoteId))
+    override fun like(remoteId: Int): Single<Long> {
+        return likedFilmsDao.insert(LikedFilm(remoteId))
     }
 
-    override suspend fun unLike(remoteId: Int) {
-        likedFilmsDao.delete(LikedFilms(remoteId))
+    override fun unLike(remoteId: Int): Single<Int> {
+        return likedFilmsDao.delete(LikedFilm(remoteId))
     }
 
-    override fun getLikedFilms(): LiveData<List<Int>> =
-        Transformations.map(likedFilmsDao.getAll()) { likedFilms ->
-            likedFilms.map { it.remoteId }
+    override fun getLikedFilms(): Observable<List<Int>> =
+        likedFilmsDao.getAll().map { list ->
+            list.map { it.remoteId }
         }
 
-    override suspend fun addScheduledFilm(remoteId: Int) {
-        scheduledFilmsDao.insert(ScheduledFilm(remoteId))
+    override fun addScheduledFilm(remoteId: Int): Single<Long> {
+        return scheduledFilmsDao.insert(ScheduledFilm(remoteId))
     }
 }
 

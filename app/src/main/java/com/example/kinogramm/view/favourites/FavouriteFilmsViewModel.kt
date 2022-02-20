@@ -1,46 +1,52 @@
 package com.example.kinogramm.view.favourites
 
-import androidx.lifecycle.*
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.example.kinogramm.domain.Film
 import com.example.kinogramm.domain.usecases.GetFilmsUseCase
 import com.example.kinogramm.domain.usecases.GetLikedFilmsUseCase
 import com.example.kinogramm.domain.usecases.LikeFilmUseCase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
+private const val TAG = "FavouriteFilmsViewModel"
+
 class FavouriteFilmsViewModel @Inject constructor(
-    private val getLikedFilmsUseCase: GetLikedFilmsUseCase,
+    getLikedFilmsUseCase: GetLikedFilmsUseCase,
     private val getFilmsUseCase: GetFilmsUseCase,
     private val likeFilmUseCase: LikeFilmUseCase,
 ) : ViewModel() {
-    private val favouriteFilmIds: LiveData<List<Int>> = getLikedFilmsUseCase.getLikedFilms()
-
-    private val favIdsObserver: Observer<List<Int>> by lazy {
-        Observer { favs ->
-            viewModelScope.launch(Dispatchers.IO) {
-                val films = getFilmsUseCase.getFilmsList().filter { it.remoteId in favs }
-                _favouriteFilms.postValue(films)
-            }
-        }
-    }
+    private val favouriteFilmIds: Observable<List<Int>> = getLikedFilmsUseCase.getLikedFilms()
 
     private val _favouriteFilms = MutableLiveData<List<Film>>()
     val favouriteFilms: LiveData<List<Film>>
         get() = _favouriteFilms
 
     init {
-        favouriteFilmIds.observeForever(favIdsObserver)
+        favouriteFilmIds
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { favs ->
+                getFavouriteFilms(favs)
+            }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        favouriteFilmIds.removeObserver(favIdsObserver)
+    private fun getFavouriteFilms(favs: List<Int>) {
+        getFilmsUseCase.getFilmsList()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ films ->
+                _favouriteFilms.value = films.filter { it.remoteId in favs }
+            }, { e ->
+                Log.d(TAG, "${e.message}")
+            })
     }
 
     fun removeFromFavourites(film: Film) {
-        viewModelScope.launch(Dispatchers.IO) {
-            likeFilmUseCase.unLikeFilm(film)
-        }
+        likeFilmUseCase.unLikeFilm(film)
     }
 }

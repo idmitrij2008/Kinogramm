@@ -8,7 +8,7 @@ import com.example.kinogramm.data.models.FilmModel
 import com.example.kinogramm.util.Constants.DB_NAME
 
 @Database(
-    entities = [FilmModel::class, RemoteKeys::class, LikedFilms::class, ScheduledFilm::class],
+    entities = [FilmModel::class, RemoteKeys::class, LikedFilm::class, ScheduledFilm::class],
     version = 1,
     exportSchema = false
 )
