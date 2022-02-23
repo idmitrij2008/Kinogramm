@@ -22,6 +22,6 @@ interface FilmsDao {
     @Query("SELECT * FROM films_table")
     fun getFilmsList(): List<FilmModel>
 
-    @Query("SELECT * FROM films_table WHERE filmId=:id")
-    fun getFilm(id: Int): FilmModel
+    @Query("SELECT * FROM films_table WHERE remoteId = :remoteId")
+    fun getFilm(remoteId: Int): FilmModel
 }

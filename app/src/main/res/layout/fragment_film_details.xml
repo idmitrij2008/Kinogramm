@@ -74,16 +74,28 @@
         </androidx.core.widget.NestedScrollView>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/schedule_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:backgroundTint="@color/white"
+            android:contentDescription="@string/schedule_reminder"
+            android:onClick="@{() -> viewModel.scheduleClicked()}"
+            android:src="@drawable/ic_clock"
+            app:layout_anchor="@id/main_appbar"
+            app:layout_anchorGravity="bottom|start" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/like_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:backgroundTint="@color/white"
-            android:contentDescription="@string/add_comment"
+            android:contentDescription="@string/add_to_favourites"
             android:onClick="@{() -> viewModel.likeClicked()}"
             android:src="@drawable/ic_heart"
             app:layout_anchor="@id/main_appbar"
-            app:layout_anchorGravity="bottom|right|end" />
+            app:layout_anchorGravity="bottom|end" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

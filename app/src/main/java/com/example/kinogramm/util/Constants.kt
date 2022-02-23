@@ -11,4 +11,12 @@ object Constants {
     const val FILMS_TABLE = "films_table"
     const val REMOTE_KEYS_TABLE = "remote_keys_table"
     const val LIKED_FILMS_TABLE = "liked_films_table"
+    const val SCHEDULED_FILMS_TABLE = "scheduled_films_table"
+
+    const val SHARED_PREFS_NAME = "kinogramm_prefs"
+    const val FIREBASE_MESSAGING_TOKEN_NAME = "messaging_token"
+
+    const val ACTION_SCHEDULED_FILM = "com.example.kinogramm.action.SCHEDULED_FILM"
+    const val EXTRA_FILM_REMOTE_ID = "film_remote_id"
+    const val EXTRA_FILM_TITLE = "film_title"
 }

@@ -7,4 +7,14 @@
     <string name="share">Поделиться</string>
     <string name="like">Нравится</string>
     <string name="add_comment">Добавить комментарий</string>
+    <string name="favourites">Избранное</string>
+    <string name="show_favourites">Показать избранное</string>
+    <string name="confirm_exit">Подтвердить выход</string>
+    <string name="cancel">Отмена</string>
+    <string name="all_films">Все фильмы</string>
+    <string name="try_again">Попробовать снова</string>
+    <string name="load_error">Ошибка загрузки</string>
+    <string name="add_to_favourites">Добавить в избранное</string>
+    <string name="schedule_reminder">Запланировать просмотр</string>
+    <string name="film_already_scheduled">Фильм уже запланирован к просмотру</string>
 </resources>
