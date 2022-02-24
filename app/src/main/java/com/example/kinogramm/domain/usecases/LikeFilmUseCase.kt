@@ -1,6 +1,7 @@
 package com.example.kinogramm.domain.usecases
 
 import android.util.Log
+import com.example.kinogramm.Mockable
 import com.example.kinogramm.domain.Film
 import com.example.kinogramm.domain.IFilmsRepository
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -8,6 +9,7 @@ import javax.inject.Inject
 
 private const val TAG = "LikeFilmUseCase"
 
+@Mockable
 class LikeFilmUseCase @Inject constructor(
     private val repository: IFilmsRepository
 ) {
