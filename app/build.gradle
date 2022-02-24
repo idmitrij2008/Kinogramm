@@ -106,6 +106,16 @@ dependencies {
 
 //    androidTestImplementation 'androidx.arch.core:core-testing:2.1.0'
     testImplementation 'androidx.arch.core:core-testing:2.1.0'
+    // Required -- JUnit 4 framework
+//    testImplementation "junit:junit:$jUnitVersion"
+    // Optional -- Robolectric environment
+//    testImplementation "androidx.test:core:$androidXTestVersion"
+    // Optional -- Mockito framework
+    testImplementation "org.mockito:mockito-core:4.3.1"
+    // Optional -- mockito-kotlin
+//    testImplementation "org.mockito:mockito-kotlin:4.0.0"
+    // Optional -- Mockk framework
+//    testImplementation "io.mockk:mockk:$mockkVersion"
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
