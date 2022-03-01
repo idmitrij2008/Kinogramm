@@ -105,11 +105,12 @@ class FilmsRemoteMediator(
                     .filter { it.remoteId in newRemoteIds }
                     .map { RemoteKeys(filmId = it.filmId, prevKey = prevKey, nextKey = nextKey) }
             }
-            .subscribe({ keys ->
+            .flatMapCompletable { keys ->
                 appDatabase.remoteKeysDao().insertAll(keys)
-            }, { e ->
-                Log.e(TAG, "${e.message}")
-            })
+            }
+            .subscribe(
+                { Log.d(TAG, "Remote keys successfully inserted.") },
+                { Log.e(TAG, "${it.message}") })
     }
 
     private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, FilmModel>): RemoteKeys? {

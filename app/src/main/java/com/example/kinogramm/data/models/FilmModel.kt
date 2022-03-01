@@ -2,10 +2,9 @@ package com.example.kinogramm.data.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.kinogramm.util.Constants
 import com.google.gson.annotations.SerializedName
 
-@Entity(tableName = Constants.FILMS_TABLE)
+@Entity(tableName = "films_table")
 data class FilmModel(
     @PrimaryKey(autoGenerate = true)
     val filmId: Int = 0,

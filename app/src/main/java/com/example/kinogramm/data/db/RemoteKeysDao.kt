@@ -4,12 +4,13 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import io.reactivex.rxjava3.core.Completable
 
 @Dao
 interface RemoteKeysDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(remoteKey: List<RemoteKeys>)
+    fun insertAll(remoteKey: List<RemoteKeys>): Completable
 
     @Query("SELECT * FROM remote_keys_table WHERE filmId = :filmId")
     suspend fun remoteKeysFilmId(filmId: Int): RemoteKeys?

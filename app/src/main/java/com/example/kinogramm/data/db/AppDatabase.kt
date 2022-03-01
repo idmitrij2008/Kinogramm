@@ -5,7 +5,6 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.kinogramm.data.models.FilmModel
-import com.example.kinogramm.util.Constants.DB_NAME
 
 @Database(
     entities = [FilmModel::class, RemoteKeys::class, LikedFilm::class, ScheduledFilm::class],
@@ -32,7 +31,7 @@ abstract class AppDatabase : RoomDatabase() {
                 val db = Room.databaseBuilder(
                     application,
                     AppDatabase::class.java,
-                    DB_NAME
+                    "films_db"
                 ).build()
 
                 INSTANCE = db
